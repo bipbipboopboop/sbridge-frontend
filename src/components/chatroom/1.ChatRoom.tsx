@@ -42,8 +42,8 @@ const ChatRoom = () => {
   return (
     <>
       <main>
-        {messages?.reverse().map((msg) => (
-          <ChatMessage key={msg.id} message={msg} />
+        {messages?.reverse().map((msg, index) => (
+          <ChatMessage key={index} message={msg} />
         ))}
 
         <span ref={dummy}></span>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { auth } from "../../utils/firebase";
 import { signInAnonymously } from "firebase/auth";
+import { PacmanLoader } from "react-spinners";
 
 type Props = {};
 
@@ -17,12 +18,16 @@ const Login = (props: Props) => {
   };
 
   return (
-    <div>
-      <button className="sign-in" onClick={signIn}>
-        Sign in Anonymously
-      </button>
-      <li>{`${loading}`}</li>
-    </div>
+    <>
+      {!loading && (
+        <button className="sign-in" onClick={signIn}>
+          Sign in Anonymously
+        </button>
+      )}
+      <div className="w-100 d-flex justify-content-center">
+        {loading && <PacmanLoader color="yellow" />}
+      </div>
+    </>
   );
 };
 

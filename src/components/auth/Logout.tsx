@@ -1,14 +1,13 @@
 import React from "react";
-import { useSignOut } from "react-firebase-hooks/auth";
+import { useDeleteUser } from "react-firebase-hooks/auth";
 import { auth } from "../../utils/firebase";
 
-type Props = {};
+const Logout = () => {
+  const [deleteUser] = useDeleteUser(auth);
 
-const Logout = (props: Props) => {
-  const [signOut] = useSignOut(auth);
   const logOut = async () => {
     try {
-      await signOut();
+      await deleteUser();
       console.log(`User logged out!`);
     } catch (e: any) {
       alert(e.message);

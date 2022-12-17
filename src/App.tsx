@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import "./App.css";
 import Login from "./components/auth/Login";
 import { auth } from "./utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -19,7 +20,7 @@ function App() {
         <Logout />
       </header>
       {/* <li>{JSON.stringify(user)}</li> */}
-      {user ? <ChatRoom /> : <Login />}
+      <section>{user ? <ChatRoom /> : <Login />}</section>
     </div>
   );
 }
