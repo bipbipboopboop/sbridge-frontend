@@ -1,18 +1,12 @@
-import React, { FormEvent, useRef, useState } from "react";
-import {
-  addDoc,
-  collection,
-  limit,
-  orderBy,
-  query,
-  serverTimestamp,
-} from "firebase/firestore";
-import { auth, firestore } from "../../utils/firebase";
+import React, { useEffect, useRef } from "react";
+import { collection, limit, orderBy, query } from "firebase/firestore";
+import { firestore } from "../../utils/firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import ChatMessage from "./2.ChatMessage";
+import ChatInput from "./3.ChatInput";
 
 const ChatRoom = () => {
-  const dummy = useRef<HTMLSpanElement>(null);
+  const dummy = useRef<HTMLSpanElement>(document.createElement("span"));
   const messagesRef = collection(firestore, "messages");
   const messagesQuery = query(
     messagesRef,
@@ -22,43 +16,22 @@ const ChatRoom = () => {
 
   const [messages] = useCollectionData(messagesQuery);
 
-  const [formValue, setFormValue] = useState("");
-
-  const sendMessage = async (e: FormEvent) => {
-    e.preventDefault();
-
-    const uid = auth.currentUser?.uid;
-
-    await addDoc(messagesRef, {
-      text: formValue,
-      createdAt: serverTimestamp(),
-      uid,
-    });
-
-    setFormValue("");
-    dummy.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  useEffect(() => {
+    console.log("cursor moved");
+    dummy.current.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <>
       <main>
+        <>{console.log({ messages })}</>
         {messages?.reverse().map((msg, index) => (
           <ChatMessage key={index} message={msg} />
         ))}
-
         <span ref={dummy}></span>
       </main>
 
-      <form onSubmit={sendMessage}>
-        <input
-          value={formValue}
-          onChange={(e) => setFormValue(e.target.value)}
-        />
-
-        <button type="submit" disabled={!formValue}>
-          🕊️
-        </button>
-      </form>
+      <ChatInput />
     </>
   );
 };
