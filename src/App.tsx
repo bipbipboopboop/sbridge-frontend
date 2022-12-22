@@ -4,18 +4,17 @@ import "./App.css";
 import { auth } from "./utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ChatRoom from "./components/chatroom/1.ChatRoom";
-import Logout from "./components/auth/Logout";
-import Login from "./components/test/Login";
+
+import Login from "./pages/Login";
+import TopNavbar from "./components/navbar/1.Navbar";
+// import Login from "./components/test/Login";
 
 function App() {
   const [user] = useAuthState(auth);
 
   return (
     <div className="App">
-      <header>
-        <h1>⚛️🔥💬</h1>
-        <Logout />
-      </header>
+      <TopNavbar />
 
       {user ? <ChatRoom /> : <Login />}
     </div>
