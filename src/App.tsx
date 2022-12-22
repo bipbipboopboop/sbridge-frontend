@@ -1,5 +1,5 @@
 import React from "react";
-import "./App-test.css";
+import "./App.css";
 
 import { auth } from "./utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
