@@ -15,8 +15,8 @@ function App() {
         <h1>⚛️🔥💬</h1>
         <Logout />
       </header>
-
       <section>{user ? <ChatRoom /> : <Login />}</section>
+
       {/* <Test /> */}
     </div>
   );
