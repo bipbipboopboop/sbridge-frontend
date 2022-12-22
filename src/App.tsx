@@ -1,10 +1,11 @@
 import React from "react";
-import "./App.css";
-import Login from "./components/auth/Login";
+import "./App-test.css";
+
 import { auth } from "./utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import ChatRoom from "./components/chatroom/1.ChatRoom";
 import Logout from "./components/auth/Logout";
+import Login from "./components/test/Login";
 
 function App() {
   const [user] = useAuthState(auth);
@@ -15,9 +16,8 @@ function App() {
         <h1>⚛️🔥💬</h1>
         <Logout />
       </header>
-      <section>{user ? <ChatRoom /> : <Login />}</section>
 
-      {/* <Test /> */}
+      {user ? <ChatRoom /> : <Login />}
     </div>
   );
 }
