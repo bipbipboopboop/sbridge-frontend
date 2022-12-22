@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { collection, limit, orderBy, query } from "firebase/firestore";
 import { firestore } from "../../utils/firebase";
 import { useCollectionData } from "react-firebase-hooks/firestore";

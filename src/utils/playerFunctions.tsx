@@ -1,26 +1,22 @@
-import {
-  collection,
-  CollectionReference,
-  doc,
-  getDoc,
-  setDoc,
-} from "firebase/firestore";
+import { doc, DocumentReference, setDoc } from "firebase/firestore";
 
 import { PlayerType } from "../types/PlayerType";
 import { auth, firestore } from "./firebase";
 
-const playersRef = collection(
-  firestore,
-  "players"
-) as CollectionReference<PlayerType>;
-
-const addPlayer = ({ playerName, roomID }: Omit<PlayerType, "uid">) => {
+/**
+ * Creates a `Player` instance using the current `User` instance,
+ * where `Player` is an augmentation of `User` with additional information(playerName).
+ * Used when a user logs in anonymously.
+ *
+ * @param {string} playerName
+ */
+const addPlayer = ({ playerName }: Omit<PlayerType, "uid" | "roomID">) => {
   if (auth.currentUser) {
     const uid = auth.currentUser.uid;
     setDoc(doc(firestore, "players", uid), {
       uid: auth.currentUser.uid,
       playerName,
-      roomID,
+      roomID: "publicLobby",
     });
   } else {
     throw new Error("User doesn't exist!");
@@ -35,18 +31,17 @@ const getUID = () => {
   }
 };
 
-const asyncGetPlayer = async () => {
+const getCurrPlayerRef = () => {
   const currPlayerUID = getUID();
-
-  if (currPlayerUID) {
-    const currPlayerRef = doc(firestore, "players", currPlayerUID);
-    const currPlayer = await getDoc(currPlayerRef);
-    console.log({ currPlayer });
-    return currPlayer;
-  }
-  return null;
+  const currPlayerRef = currPlayerUID
+    ? (doc(
+        firestore,
+        "players",
+        currPlayerUID
+      ) as DocumentReference<PlayerType>)
+    : null;
+  return currPlayerRef;
 };
+const currPlayerRef = getCurrPlayerRef();
 
-asyncGetPlayer();
-
-export { playersRef, addPlayer, getUID };
+export { addPlayer, currPlayerRef };
