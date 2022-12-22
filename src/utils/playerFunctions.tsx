@@ -1,4 +1,4 @@
-import { doc, DocumentReference, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, DocumentReference, setDoc } from "firebase/firestore";
 
 import { PlayerType } from "../types/PlayerType";
 import { auth, firestore } from "./firebase";
@@ -10,7 +10,7 @@ import { auth, firestore } from "./firebase";
  *
  * @param {string} playerName
  */
-const addPlayer = ({ playerName }: Omit<PlayerType, "uid" | "roomID">) => {
+const addCurrPlayer = ({ playerName }: Omit<PlayerType, "uid" | "roomID">) => {
   if (auth.currentUser) {
     const uid = auth.currentUser.uid;
     setDoc(doc(firestore, "players", uid), {
@@ -23,6 +23,13 @@ const addPlayer = ({ playerName }: Omit<PlayerType, "uid" | "roomID">) => {
   }
 };
 
+const deleteCurrPlayer = () => {
+  if (auth.currentUser) {
+    const uid = auth.currentUser.uid;
+    deleteDoc(doc(firestore, "players", uid));
+  }
+};
+
 const getUID = () => {
   if (auth.currentUser) {
     return auth.currentUser.uid;
@@ -31,17 +38,24 @@ const getUID = () => {
   }
 };
 
-const getCurrPlayerRef = () => {
-  const currPlayerUID = getUID();
-  const currPlayerRef = currPlayerUID
-    ? (doc(
-        firestore,
-        "players",
-        currPlayerUID
-      ) as DocumentReference<PlayerType>)
-    : null;
-  return currPlayerRef;
-};
-const currPlayerRef = getCurrPlayerRef();
+// const getCurrPlayerRef = () => {
+//   const currPlayerUID = getUID();
+//   const currPlayerRef = currPlayerUID
+//     ? (doc(
+//         firestore,
+//         "players",
+//         currPlayerUID
+//       ) as DocumentReference<PlayerType>)
+//     : null;
+//   console.log({ currPlayerRef });
+//   return currPlayerRef;
+// };
+// const currPlayerRef = getCurrPlayerRef();
 
-export { addPlayer, currPlayerRef };
+const currPlayerUID = getUID();
+const currPlayerRef = currPlayerUID
+  ? (doc(firestore, "players", currPlayerUID) as DocumentReference<PlayerType>)
+  : null;
+console.log({ currPlayerRef });
+
+export { addCurrPlayer, deleteCurrPlayer, currPlayerRef };

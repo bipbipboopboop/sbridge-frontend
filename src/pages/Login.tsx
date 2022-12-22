@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { signInAnonymously } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { addPlayer } from "../utils/playerFunctions";
+import { addCurrPlayer } from "../utils/playerFunctions";
 
 /**
  * Styling
@@ -32,7 +32,7 @@ const Login = () => {
     try {
       setLoading(true);
       await signInAnonymously(auth);
-      addPlayer({ playerName });
+      addCurrPlayer({ playerName });
       setLoading(false);
       // setTimeout(() => setLoading(false), 10000); // Testing
     } catch (err: any) {
