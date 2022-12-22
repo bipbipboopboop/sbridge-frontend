@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { auth } from "../../utils/firebase";
-import { signInAnonymously } from "firebase/auth";
 import { PacmanLoader } from "react-spinners";
 
-type Props = {};
+import { signInAnonymously } from "firebase/auth";
+import { auth } from "../../utils/firebase";
+import { addPlayer } from "../../utils/playerFunctions";
 
-const Login = (props: Props) => {
+const Login = () => {
   const [loading, setLoading] = useState(false);
   const signIn = async () => {
     try {
       setLoading(true);
       await signInAnonymously(auth);
+      addPlayer({ playerName: "Abner", roomID: "publicLobby" });
       setLoading(false);
     } catch (err: any) {
       alert(err.message);

@@ -1,5 +1,7 @@
 import React from "react";
 import { useDeleteUser } from "react-firebase-hooks/auth";
+import { useDocumentDataOnce } from "react-firebase-hooks/firestore";
+import { PlayerType } from "../../types/PlayerType";
 import { auth } from "../../utils/firebase";
 
 const Logout = () => {
