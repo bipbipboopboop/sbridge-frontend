@@ -19,18 +19,11 @@ const TopNavbar = () => {
       <Container className="d-flex justify-content-between">
         <Navbar.Brand>S-Bridge</Navbar.Brand>
         <div>
-          <Navbar.Collapse>
-            <Nav className="me-auto">
-              {playerData && (
-                <NavDropdown
-                  title={`${playerData.playerName}`}
-                  id="basic-nav-dropdown"
-                >
-                  <NavDropdown.Item onClick={logOut}>Logout</NavDropdown.Item>
-                </NavDropdown>
-              )}
-            </Nav>
-          </Navbar.Collapse>
+          {playerData && (
+            <NavDropdown title={`${playerData.playerName}`}>
+              <NavDropdown.Item onClick={logOut}>Logout</NavDropdown.Item>
+            </NavDropdown>
+          )}
         </div>
       </Container>
     </Navbar>

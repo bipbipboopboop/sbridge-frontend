@@ -91,7 +91,7 @@ const ReceivedMessage = (props: {
   return (
     <ReceivedDiv>
       <div>
-        <p className="d-flex p-0 m-0">{props.msgProps.playerName}</p>
+        <p className="d-flex p-0 my-0 mx-4">{props.msgProps.playerName}</p>
         <ReceivedP>{props.msgProps.text}</ReceivedP>
       </div>
     </ReceivedDiv>
