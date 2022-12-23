@@ -14,11 +14,13 @@ const ChatInput = () => {
     e.preventDefault();
 
     const uid = auth.currentUser?.uid;
+    const playerName = auth.currentUser?.displayName;
 
     await addDoc(messagesRef, {
       text: textInput,
       createdAt: serverTimestamp(),
       uid,
+      playerName,
     });
 
     setTextInput("");

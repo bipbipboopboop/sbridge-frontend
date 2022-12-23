@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { signInAnonymously } from "firebase/auth";
+import { signInAnonymously, updateProfile } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { addCurrPlayer } from "../utils/playerFunctions";
 
@@ -31,7 +31,7 @@ const Login = () => {
   const handleSignIn = async () => {
     try {
       setLoading(true);
-      await signInAnonymously(auth);
+      const currUser = await signInAnonymously(auth);
       addCurrPlayer({ playerName });
       setLoading(false);
       // setTimeout(() => setLoading(false), 10000); // Testing
@@ -43,14 +43,16 @@ const Login = () => {
   const LoginForm = (
     <>
       <h2>Enter your name</h2>
-      <input
-        className="mt-3"
-        value={playerName}
-        onChange={(e) => setPlayerName(e.target.value)}
-      />
-      <Button variant="primary" className="mt-3" onClick={handleSignIn}>
-        Enter Lobby
-      </Button>
+      <form className="d-flex flex-column" onSubmit={handleSignIn}>
+        <input
+          className="mt-3"
+          value={playerName}
+          onChange={(e) => setPlayerName(e.target.value)}
+        />
+        <Button variant="primary" className="mt-3" type="submit">
+          Enter Lobby
+        </Button>
+      </form>
     </>
   );
 

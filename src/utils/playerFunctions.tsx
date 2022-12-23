@@ -1,3 +1,4 @@
+import { updateProfile } from "firebase/auth";
 import { deleteDoc, doc, DocumentReference, setDoc } from "firebase/firestore";
 
 import { PlayerType } from "../types/PlayerType";
@@ -18,6 +19,7 @@ const addCurrPlayer = ({ playerName }: Omit<PlayerType, "uid" | "roomID">) => {
       playerName,
       roomID: "publicLobby",
     });
+    updateProfile(auth.currentUser, { displayName: playerName });
   } else {
     throw new Error("User doesn't exist!");
   }
@@ -38,24 +40,4 @@ const getUID = () => {
   }
 };
 
-// const getCurrPlayerRef = () => {
-//   const currPlayerUID = getUID();
-//   const currPlayerRef = currPlayerUID
-//     ? (doc(
-//         firestore,
-//         "players",
-//         currPlayerUID
-//       ) as DocumentReference<PlayerType>)
-//     : null;
-//   console.log({ currPlayerRef });
-//   return currPlayerRef;
-// };
-// const currPlayerRef = getCurrPlayerRef();
-
-const currPlayerUID = getUID();
-const currPlayerRef = currPlayerUID
-  ? (doc(firestore, "players", currPlayerUID) as DocumentReference<PlayerType>)
-  : null;
-console.log({ currPlayerRef });
-
-export { addCurrPlayer, deleteCurrPlayer, currPlayerRef };
+export { addCurrPlayer, deleteCurrPlayer };

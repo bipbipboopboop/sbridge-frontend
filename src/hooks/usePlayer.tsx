@@ -22,7 +22,7 @@ const usePlayer = () => {
         currPlayerUID
       ) as DocumentReference<PlayerType>)
     : null;
-  console.log({ currPlayerRef });
+
   const [playerData] = useDocumentData<PlayerType | null>(currPlayerRef);
 
   const [deleteUser] = useDeleteUser(auth);
