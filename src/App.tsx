@@ -6,6 +6,7 @@ import ChatRoom from "./components/chatroom/1.ChatRoom";
 
 import Login from "./pages/Login";
 import TopNavbar from "./components/navbar/1.Navbar";
+import Game from "./components/test/Test";
 // import Login from "./components/test/Login";
 
 function App() {
@@ -15,7 +16,8 @@ function App() {
     <div className="App">
       <TopNavbar />
 
-      {user ? <ChatRoom /> : <Login />}
+      {/* {user ? <ChatRoom /> : <Login />} */}
+      {user ? <Game /> : <Login />}
     </div>
   );
 }

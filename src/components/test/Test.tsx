@@ -1,114 +1,39 @@
-import { firestore } from "../../utils/firebase";
+import React, { useState } from "react";
+import { RoomType } from "../../types/RoomType";
 
-import {
-  collection,
-  query,
-  DocumentData,
-  DocumentReference,
-  getDoc,
-  CollectionReference,
-} from "firebase/firestore";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+type Props = {};
 
-interface UserDocument extends DocumentData {
-  userName: string;
-  room: DocumentReference<RoomDocumentData>;
-}
-
-interface RoomDocumentData extends DocumentData {
-  roomName?: string;
-  users: DocumentReference<UserDocument>[];
-}
-
-const Test = () => {
-  const roomsRef = collection(
-    firestore,
-    "rooms"
-  ) as CollectionReference<RoomDocumentData>;
-  const roomsQuery = query(roomsRef);
-  const [tempRooms] = useCollectionData(roomsQuery);
-
-  if (typeof tempRooms !== "undefined") {
-    const tempRoomsNonNullable = tempRooms as RoomDocumentData[];
-
-    const usersArrayInRooms = tempRoomsNonNullable.map((room) => room.users);
-
-    const populatedUsersArrayInRooms = usersArrayInRooms.map((users) => {
-      return users.map(async (user) => {
-        const usr = await getDoc(user);
-        console.log(usr.data());
-        return usr.data();
-      });
-    });
-
-    console.log({ populatedUsersArrayInRooms });
-  }
-
-  const objectMapFunction = (
-    object: Object,
-    mapFunction: (arg1: any, arg2?: number) => any
-  ) => {
-    const result = Object.keys(object).map(mapFunction);
-    return result;
-  };
-
-  const populate = function (documentData: DocumentData, depth: number = 1) {
-    if (depth === 1) {
-      const mappingFunction = async function (key: string) {
-        const docFieldValue = documentData[key];
-        try {
-          // console.log(`In try : ${key} - ${JSON.stringify(docFieldValue)}`);
-          if (Array.isArray(docFieldValue)) {
-            const arr = docFieldValue;
-            const populatedArr = arr.map(async (item) => {
-              const populatedItem = await (await getDoc(item)).data();
-              console
-                .log
-                // `In try : populatedArrItem ${[JSON.stringify(populatedItem)]}`
-                ();
-              return populatedItem;
-            });
-            // console.log(`In try : populatedArr ${populatedArr}`);
-            return populatedArr;
-          } else {
-            const populatedField = await getDoc(docFieldValue);
-            // console.log(`In try : populated field ${populatedField}`);
-            return populatedField;
-          }
-        } catch (err) {
-          console.log(`In Error : ${key} - ${docFieldValue}`);
-          return docFieldValue;
-        }
-      };
-      return objectMapFunction(documentData, mappingFunction);
-    } else {
-      Object.keys(documentData).map(function (key) {
-        try {
-          return populate(documentData[key], depth - 1);
-        } catch (err) {
-          return documentData[key];
-        }
-      });
-    }
-  };
-
-  const rooms = tempRooms?.map((room) => populate(room));
-
-  const usersRef = collection(firestore, "users");
-  const usersQuery = query(usersRef);
-  const [users] = useCollectionData(usersQuery);
-
+const Game = (props: Props) => {
+  const [rooms, setRooms] = useState<RoomType[]>([
+    { roomID: "room1_id", status: "Not Ready", players: [] },
+    { roomID: "room2_id", status: "Not Ready", players: [] },
+  ]);
   return (
-    <>
-      {console.log({
-        roomsRef,
-        roomsQuery,
-        tempRooms,
-        rooms,
-        users,
-      })}
-    </>
+    <div className="w-100 h-100 d-flex">
+      <div className="h-100 w-50 p-3">
+        <h1>Rooms</h1>
+        <div className="room">
+          {rooms.map((rm) => (
+            <div className="my-5">
+              <p>
+                {`ROOM : ${rm.roomID} - ${rm.status}`}{" "}
+                <button className="btn btn-primary">Join</button>
+              </p>
+              <p>{`Players [${rm.players.length}] : `}</p>
+              <ul>
+                {rm.players.map((plyr) => (
+                  <li>{`${plyr.playerName}`}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="h-100 w-50 p-3">
+        <button className="btn btn-primary">Create</button>
+      </div>
+    </div>
   );
 };
 
-export default Test;
+export default Game;
