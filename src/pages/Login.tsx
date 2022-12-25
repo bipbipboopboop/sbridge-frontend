@@ -1,15 +1,10 @@
-import { useState } from "react";
-
-import { signInAnonymously, updateProfile } from "firebase/auth";
-import { auth } from "../utils/firebase";
-import { addCurrPlayer } from "../utils/playerFunctions";
-
 /**
  * Styling
  */
 import { Button, Card } from "react-bootstrap";
-import { PacmanLoader } from "react-spinners";
 import styled from "styled-components";
+import Loading from "../components/Loading";
+import useLogin from "../hooks/useLogin";
 
 const Background = styled.div`
   background: rgb(129, 251, 184);
@@ -26,19 +21,11 @@ const Background = styled.div`
 `;
 
 const Login = () => {
-  const [loading, setLoading] = useState(false);
-  const [playerName, setPlayerName] = useState("");
-  const handleSignIn = async () => {
-    try {
-      setLoading(true);
-      const currUser = await signInAnonymously(auth);
-      addCurrPlayer({ playerName });
-      setLoading(false);
-      // setTimeout(() => setLoading(false), 10000); // Testing
-    } catch (err: any) {
-      alert(err.message);
-    }
-  };
+  const {
+    loading,
+    handleSignIn,
+    playerProps: { playerName, setPlayerName },
+  } = useLogin();
 
   const LoginForm = (
     <>
@@ -55,15 +42,6 @@ const Login = () => {
       </form>
     </>
   );
-
-  const Loading = () => {
-    return (
-      <>
-        <h2>Loading</h2>
-        <PacmanLoader color={"#98FB98"} />
-      </>
-    );
-  };
 
   return (
     <Background>

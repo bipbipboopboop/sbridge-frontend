@@ -3,18 +3,19 @@ import { RoomType } from "../../types/RoomType";
 
 type Props = {};
 
-const Game = (props: Props) => {
+const Lobby = (props: Props) => {
   const [rooms, setRooms] = useState<RoomType[]>([
     { roomID: "room1_id", status: "Not Ready", players: [] },
     { roomID: "room2_id", status: "Not Ready", players: [] },
   ]);
+
   return (
     <div className="w-100 h-100 d-flex">
       <div className="h-100 w-50 p-3">
         <h1>Rooms</h1>
         <div className="room">
           {rooms.map((rm) => (
-            <div className="my-5">
+            <div className="my-5" key={rm.roomID}>
               <p>
                 {`ROOM : ${rm.roomID} - ${rm.status}`}{" "}
                 <button className="btn btn-primary">Join</button>
@@ -36,4 +37,4 @@ const Game = (props: Props) => {
   );
 };
 
-export default Game;
+export default Lobby;

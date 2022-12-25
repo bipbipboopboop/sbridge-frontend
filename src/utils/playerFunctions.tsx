@@ -1,5 +1,4 @@
-import { updateProfile } from "firebase/auth";
-import { deleteDoc, doc, DocumentReference, setDoc } from "firebase/firestore";
+import { deleteDoc, doc, setDoc } from "firebase/firestore";
 
 import { PlayerType } from "../types/PlayerType";
 import { auth, firestore } from "./firebase";
@@ -19,7 +18,6 @@ const addCurrPlayer = ({ playerName }: Omit<PlayerType, "uid" | "roomID">) => {
       playerName,
       roomID: "publicLobby",
     });
-    updateProfile(auth.currentUser, { displayName: playerName });
   } else {
     throw new Error("User doesn't exist!");
   }
