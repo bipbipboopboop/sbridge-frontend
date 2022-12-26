@@ -6,11 +6,10 @@ import ChatRoom from "./components/chatroom/1.ChatRoom";
 
 import Login from "./pages/Login";
 import TopNavbar from "./components/navbar/1.Navbar";
-import Lobby from "./components/test/Lobby";
+import Lobby from "./pages/Lobby";
 
 function App() {
   const [user] = useAuthState(auth);
-  console.log({ user });
 
   return (
     <div className="App">

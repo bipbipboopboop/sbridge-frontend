@@ -1,93 +1,125 @@
 import * as functions from "firebase-functions";
-import {DocumentReference} from "firebase-admin/firestore";
 import * as admin from "firebase-admin";
+import {
+  DocumentReference,
+  DocumentData,
+  FieldValue,
+} from "firebase-admin/firestore";
+
+import {Room} from "../utils/RoomType";
+import {Player} from "../utils/PlayerType";
+
+admin.initializeApp();
 
 // // Start writing functions
 // // https://firebase.google.com/docs/functions/typescript
 //
 
-export type PlayerType = {
-  uid: string; // player's uid
-  playerName: string; // player's name
-  roomID: string; // default : publicLobby
-  // https://stackoverflow.com/questions/70861528/firebase-9-with-react-typescript-how-do-i-change-the-querysnapshot-types
-};
+export const createRoom = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+        "failed-precondition",
+        "This player is not authenticated!"
+    );
+  }
 
-admin.initializeApp(functions.config().firebase);
+  const currPlayerUID = context.auth.uid;
+  const currPlayerRef = admin
+      .firestore()
+      .doc(`players/${currPlayerUID}`) as DocumentReference<Player>;
+  const currPlayer = (await currPlayerRef.get()).data();
 
-export const addCurrPlayer = functions.https.onCall(
-    (data: PlayerType, context) => {
-      if (context.auth) {
-        admin.firestore().doc(`players/${context.auth.uid}`).set({
-          uid: context.auth?.uid,
-          playerName: data.playerName,
-          roomID: null,
-        });
-      } else {
+  if (currPlayer) {
+    const roomOfCurrPlayer = currPlayer.roomID;
+    if (roomOfCurrPlayer) {
+      leaveRoomFn(currPlayerRef);
+    }
+    const newlyCreatedRoom = (await admin
+        .firestore()
+        .collection("rooms")
+        .add({
+          currNumPlayers: 1,
+          gameStatus: "Not Ready",
+          roomOwnerUID: currPlayerUID,
+          roomOwnerName: currPlayer.playerName,
+          playersUID: [currPlayerUID],
+        })) as DocumentReference<Room>;
+
+    await joinRoomFn(newlyCreatedRoom, currPlayerRef, currPlayer);
+    await currPlayerRef.update({roomID: newlyCreatedRoom.id});
+  }
+});
+
+export const leaveRoom = functions.https.onCall(async (data, context) => {
+  if (!context.auth) {
+    throw new functions.https.HttpsError(
+        "failed-precondition",
+        "This player is not authenticated!"
+    );
+  }
+
+  const currPlayerUID = context.auth.uid;
+  const currPlayerRef = admin.firestore().doc(`players/${currPlayerUID}`);
+  const roomID = await leaveRoomFn(currPlayerRef);
+  return roomID;
+});
+
+export const joinRoom = functions.https.onCall(
+    async (data: string, context) => {
+      if (!context.auth) {
         throw new functions.https.HttpsError(
             "failed-precondition",
             "This player is not authenticated!"
         );
       }
+
+      const roomID = data;
+
+      const roomRef = admin
+          .firestore()
+          .doc(`rooms/${roomID}`) as DocumentReference<Room>;
+      const currPlayerUID = context.auth.uid;
+      const currPlayerRef = admin
+          .firestore()
+          .doc(`players/${currPlayerUID}`) as DocumentReference<Player>;
+      functions.logger.log({data, roomRef, currPlayerRef});
+      await joinRoomFn(roomRef, currPlayerRef);
     }
 );
 
-export const createRoom = functions.https.onCall(async (data, context) => {
-  if (context.auth) {
-    const currPlayerUID = context.auth.uid;
-    const currPlayerRef = admin.firestore().doc(`players/${currPlayerUID}`);
-    const currPlayer = (await currPlayerRef.get()).data();
+const joinRoomFn = async (
+    roomRef: DocumentReference<Room>,
+    playerRef: DocumentReference<Player>,
+    playerDocData?: DocumentData
+) => {
+  const playerData = playerDocData || (await playerRef.get()).data();
+  const roomData = (await roomRef.get()).data();
 
-    if (currPlayer) {
-      const roomOfCurrPlayer = currPlayer.roomID;
-      if (roomOfCurrPlayer) {
-        leaveRoomFn(currPlayerRef);
-      }
-      const newlyCreatedRoom = await admin
-          .firestore()
-          .collection("rooms")
-          .add({
-            currNumPlayers: 1,
-            gameStatus: "Not Ready",
-            roomOwnerUID: currPlayerUID,
-            roomOwnerName: currPlayer.playerName,
-            playersUID: [currPlayerUID],
-          });
-      const newlyCreatedRoomID = newlyCreatedRoom.id;
-      await admin
-          .firestore()
-          .collection(`rooms/${newlyCreatedRoomID}/players`)
-          .add({
-            playerName: currPlayer.playerName,
-            isReady: false,
-            uid: currPlayerUID,
-          });
-      await currPlayerRef.update({roomID: newlyCreatedRoomID});
-    }
-  } else {
-    throw new functions.https.HttpsError(
-        "failed-precondition",
-        "This player is not authenticated!"
-    );
-  }
-});
+  functions.logger.log({roomData, playerData});
 
-export const leaveRoom = functions.https.onCall(async (data, context) => {
-  if (context.auth) {
-    const currPlayerUID = context.auth.uid;
-    const currPlayerRef = admin.firestore().doc(`players/${currPlayerUID}`);
-    const roomID = await leaveRoomFn(currPlayerRef);
-    return roomID;
-  } else {
-    throw new functions.https.HttpsError(
-        "failed-precondition",
-        "This player is not authenticated!"
-    );
-  }
-});
+  if (!playerData) throw new Error("This player doesn't exists!");
+  if (!roomData) throw new Error("This room doesn't exist!");
+  const isRoomFull = roomData.currNumPlayers === 4;
+  if (isRoomFull) throw new Error("This room is full!");
 
-const leaveRoomFn = async (playerRef: DocumentReference) => {
-  const playerData = (await playerRef.get()).data();
+  await leaveRoomFn(playerRef);
+
+  await admin.firestore().collection(`rooms/${roomRef.id}/players`).add({
+    playerName: playerData.playerName,
+    isReady: false,
+    uid: playerData.uid,
+  });
+  roomRef.update({
+    currNumPlayers: roomData.currNumPlayers + 1,
+    playersUID: FieldValue.arrayUnion(playerData.uid),
+  });
+};
+
+const leaveRoomFn = async (
+    playerRef: DocumentReference,
+    playerDocData?: DocumentData
+) => {
+  const playerData = playerDocData || (await playerRef.get()).data();
   const roomID = playerData?.roomID as number;
   if (!roomID) return null;
   await playerRef.update({roomID: null});
@@ -97,12 +129,12 @@ const leaveRoomFn = async (playerRef: DocumentReference) => {
   const isRoomLeftOnePerson = roomData.currNumPlayers === 1;
   const isPlayerAnOwner = roomData.roomOwner === playerData?.uid;
   if (isRoomLeftOnePerson) {
-    (
-      await admin
-          .firestore()
-          .collection(`rooms/${roomID}/players`)
-          .listDocuments()
-    ).map((plyr) => plyr.delete());
+    const playersInRoom = await admin
+        .firestore()
+        .collection(`rooms/${roomID}/players`)
+        .listDocuments();
+
+    playersInRoom.map(async (plyr) => await plyr.delete());
     await roomRef.delete();
     return roomID;
   } else if (isPlayerAnOwner) {
@@ -113,12 +145,3 @@ const leaveRoomFn = async (playerRef: DocumentReference) => {
     return null;
   }
 };
-
-export const deletePlayer = functions.auth
-    .user()
-    .onDelete(async (user, context) => {
-      const currPlayerUID = context.auth?.uid;
-      const currPlayerRef = admin.firestore().doc(`players/${currPlayerUID}`);
-      await leaveRoomFn(currPlayerRef);
-      admin.firestore().doc(`players/${user.uid}`).delete();
-    });
