@@ -5,10 +5,6 @@ import * as admin from "firebase-admin";
 // // Start writing functions
 // // https://firebase.google.com/docs/functions/typescript
 //
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
 
 export type PlayerType = {
   uid: string; // player's uid
@@ -16,6 +12,8 @@ export type PlayerType = {
   roomID: string; // default : publicLobby
   // https://stackoverflow.com/questions/70861528/firebase-9-with-react-typescript-how-do-i-change-the-querysnapshot-types
 };
+
+admin.initializeApp(functions.config().firebase);
 
 export const addCurrPlayer = functions.https.onCall(
     (data: PlayerType, context) => {
@@ -38,8 +36,8 @@ export const createRoom = functions.https.onCall(async (data, context) => {
   if (context.auth) {
     const currPlayerUID = context.auth.uid;
     const currPlayerRef = admin.firestore().doc(`players/${currPlayerUID}`);
-    const currPlayerSnapshot = await currPlayerRef.get();
-    const currPlayer = currPlayerSnapshot.data();
+    const currPlayer = (await currPlayerRef.get()).data();
+
     if (currPlayer) {
       const roomOfCurrPlayer = currPlayer.roomID;
       if (roomOfCurrPlayer) {
@@ -52,13 +50,19 @@ export const createRoom = functions.https.onCall(async (data, context) => {
             currNumPlayers: 1,
             gameStatus: "Not Ready",
             roomOwnerUID: currPlayerUID,
+            roomOwnerName: currPlayer.playerName,
             playersUID: [currPlayerUID],
           });
       const newlyCreatedRoomID = newlyCreatedRoom.id;
-      await admin.firestore().collection(`rooms/${newlyCreatedRoomID}`).add({
-        playerName: currPlayer.playerName,
-        isReady: false,
-      });
+      await admin
+          .firestore()
+          .collection(`rooms/${newlyCreatedRoomID}/players`)
+          .add({
+            playerName: currPlayer.playerName,
+            isReady: false,
+            uid: currPlayerUID,
+          });
+      await currPlayerRef.update({roomID: newlyCreatedRoomID});
     }
   } else {
     throw new functions.https.HttpsError(
@@ -68,11 +72,17 @@ export const createRoom = functions.https.onCall(async (data, context) => {
   }
 });
 
-export const leaveRoom = functions.https.onCall((data, context) => {
+export const leaveRoom = functions.https.onCall(async (data, context) => {
   if (context.auth) {
     const currPlayerUID = context.auth.uid;
     const currPlayerRef = admin.firestore().doc(`players/${currPlayerUID}`);
-    leaveRoomFn(currPlayerRef);
+    const roomID = await leaveRoomFn(currPlayerRef);
+    return roomID;
+  } else {
+    throw new functions.https.HttpsError(
+        "failed-precondition",
+        "This player is not authenticated!"
+    );
   }
 });
 
@@ -87,6 +97,12 @@ const leaveRoomFn = async (playerRef: DocumentReference) => {
   const isRoomLeftOnePerson = roomData.currNumPlayers === 1;
   const isPlayerAnOwner = roomData.roomOwner === playerData?.uid;
   if (isRoomLeftOnePerson) {
+    (
+      await admin
+          .firestore()
+          .collection(`rooms/${roomID}/players`)
+          .listDocuments()
+    ).map((plyr) => plyr.delete());
     await roomRef.delete();
     return roomID;
   } else if (isPlayerAnOwner) {
@@ -98,6 +114,11 @@ const leaveRoomFn = async (playerRef: DocumentReference) => {
   }
 };
 
-export const deletePlayer = functions.auth.user().onDelete((user, context) => {
-  admin.firestore().doc(`players/${user.uid}`).delete();
-});
+export const deletePlayer = functions.auth
+    .user()
+    .onDelete(async (user, context) => {
+      const currPlayerUID = context.auth?.uid;
+      const currPlayerRef = admin.firestore().doc(`players/${currPlayerUID}`);
+      await leaveRoomFn(currPlayerRef);
+      admin.firestore().doc(`players/${user.uid}`).delete();
+    });
