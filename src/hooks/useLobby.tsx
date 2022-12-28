@@ -3,7 +3,7 @@ import { firestore, functions } from "../utils/firebase";
 import { collection, query } from "firebase/firestore";
 import { useCollection } from "react-firebase-hooks/firestore";
 import { useHttpsCallable } from "react-firebase-hooks/functions";
-import { RoomType } from "../types/RoomType";
+import { Room } from "../types/RoomType";
 
 const useLobby = () => {
   const roomsRef = collection(firestore, "rooms");
@@ -13,7 +13,7 @@ const useLobby = () => {
   const rooms = roomQuerySnapshots?.docs.map((rm) => ({
     roomID: rm.id,
     ...rm.data(),
-  })) as unknown as RoomType[];
+  })) as unknown as Room[];
 
   const [create, isCreatingRoom] = useHttpsCallable(functions, "createRoom");
   const [joinRoom, isJoiningRoom] = useHttpsCallable(functions, "joinRoom");

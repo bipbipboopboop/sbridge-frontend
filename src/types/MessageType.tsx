@@ -1,4 +1,4 @@
-export type MessageType = {
+export type Message = {
   text: string;
   playerName: string;
   uid: string;

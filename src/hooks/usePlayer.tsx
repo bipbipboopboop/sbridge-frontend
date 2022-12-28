@@ -6,7 +6,7 @@ import { auth, firestore, functions } from "../utils/firebase";
 import { useDeleteUser } from "react-firebase-hooks/auth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 
-import { PlayerType } from "../types/PlayerType";
+import { Player } from "../types/PlayerType";
 import { useHttpsCallable } from "react-firebase-hooks/functions";
 
 const usePlayer = () => {
@@ -23,10 +23,10 @@ const usePlayer = () => {
         firestore,
         "players",
         currPlayerUID
-      ) as DocumentReference<PlayerType | null>)
+      ) as DocumentReference<Player | null>)
     : null;
 
-  const [playerData] = useDocumentData<PlayerType | null>(currPlayerRef);
+  const [playerData] = useDocumentData<Player | null>(currPlayerRef);
 
   const [deleteUser] = useDeleteUser(auth);
   const [deletePlayer] = useHttpsCallable<void, null>(

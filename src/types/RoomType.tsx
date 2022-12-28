@@ -1,4 +1,4 @@
-import { PlayerType } from "./PlayerType";
+import { RoomPlayer } from "./PlayerType";
 
 // export type RoomType = {
 //   roomID: string;
@@ -9,15 +9,12 @@ import { PlayerType } from "./PlayerType";
 //   playersUID: string[];
 // };
 
-export type RoomType = {
+export type Room = {
   roomID: string;
   roomOwnerUID: string;
   roomOwnerName: string;
   gameStatus: string;
   currNumPlayers: number;
-  players: {
-    playerName: string;
-    playerUID: string;
-  }[];
+  players: RoomPlayer[];
   playersUID: string[];
 };
