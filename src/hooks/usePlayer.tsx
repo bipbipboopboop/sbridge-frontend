@@ -2,11 +2,12 @@
  * Firesbase
  */
 import { doc, DocumentReference } from "firebase/firestore";
-import { auth, firestore } from "../utils/firebase";
+import { auth, firestore, functions } from "../utils/firebase";
 import { useDeleteUser } from "react-firebase-hooks/auth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 
 import { PlayerType } from "../types/PlayerType";
+import { useHttpsCallable } from "react-firebase-hooks/functions";
 
 const usePlayer = () => {
   const getUID = () => {
@@ -28,13 +29,22 @@ const usePlayer = () => {
   const [playerData] = useDocumentData<PlayerType | null>(currPlayerRef);
   const [deleteUser] = useDeleteUser(auth);
 
-  const logOut = async () => {
-    try {
-      await deleteUser();
-      console.log(`User logged out!`);
-    } catch (e: any) {
-      alert(e.message);
-    }
+  // const logOut = async () => {
+  //   try {
+  //     await deleteUser();
+  //     console.log(`User logged out!`);
+  //   } catch (e: any) {
+  //     alert(e.message);
+  //   }
+  // };
+
+  const [deletePlayer, loading] = useHttpsCallable(functions, "deletePlayer");
+
+  const logOut = async (e: React.FormEvent<HTMLElement>) => {
+    e.preventDefault();
+    const result = await deletePlayer();
+    await deleteUser();
+    console.log({ result });
   };
 
   const isPlayerInAnyRoom = playerData?.roomID ? true : false;

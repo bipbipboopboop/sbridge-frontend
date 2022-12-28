@@ -1,6 +1,6 @@
 import { initializeApp, getApp } from "@firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { connectFunctionsEmulator, getFunctions } from "firebase/functions";
 
 const firebaseConfig = {
@@ -23,11 +23,13 @@ const firebaseConfig = {
 /**
  * Testing
  */
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const firestore = getFirestore(app);
+initializeApp(firebaseConfig);
+const auth = getAuth(getApp());
+const firestore = getFirestore(getApp());
 const functions = getFunctions(getApp());
+connectAuthEmulator(auth, "http://127.0.0.1:9099");
+connectFirestoreEmulator(firestore, "localhost", 8080);
 connectFunctionsEmulator(functions, "localhost", 5001);
-console.log({ app, getapp: getApp() });
+console.log({ getapp: getApp() });
 
-export { app, auth, firestore, functions };
+export { auth, firestore, functions };

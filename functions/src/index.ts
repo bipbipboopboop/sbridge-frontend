@@ -7,15 +7,17 @@ import * as admin from "firebase-admin";
 //   functions.logger.info("Hello logs!", {structuredData: true});
 //   response.send("Hello from Firebase!");
 // });
+admin.initializeApp();
 
 export const deletePlayer = functions.https.onCall(async (data, context) => {
-  if (!context.auth)
+  if (!context.auth) {
+    console.log({ status: "error", code: 401, message: "Not signed in" });
     return { status: "error", code: 401, message: "Not signed in" };
+  }
   const playerUID = context.auth.uid;
   const playerRef = admin.firestore().doc(`players/${playerUID}`);
-  console.log({ playerRef });
+  console.log({ playerRef: JSON.stringify(playerRef) });
   await playerRef.delete();
-  await admin.auth().deleteUser(playerUID);
   return {
     status: "success",
     code: 401,
