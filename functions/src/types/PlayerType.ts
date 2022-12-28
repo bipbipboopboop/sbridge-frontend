@@ -3,3 +3,9 @@ export type Player = {
   roomID: string | null;
   uid: string;
 };
+
+export type RoomPlayer = {
+  playerName: string;
+  uid: string;
+  isReady: boolean;
+};

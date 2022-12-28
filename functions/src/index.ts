@@ -1,9 +1,9 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { DocumentReference } from "firebase-admin/firestore";
 
 import { Room } from "./types/RoomType";
-import { Player } from "./types/PlayerType";
+import { Player, RoomPlayer } from "./types/PlayerType";
+import { getCollectionRef, getDocRefAndData, HTTPError } from "./utils/utils";
 
 // // Start writing functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -126,17 +126,36 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   await roomRef.update(newRoom);
 };
 
-const getDocRefAndData = async <T>(
-  path: string
-): Promise<[ref: DocumentReference<T>, data: T | null]> => {
-  const ref = admin.firestore().doc(path) as DocumentReference<T>;
-  const data = (await ref.get()).data() as T | null;
-  return [ref, data];
-};
+export const createRoom = functions.https.onCall(async (_, context) => {
+  if (!context.auth)
+    throw HTTPError("failed-precondition", "This player is not authenticated!");
 
-const HTTPError = (
-  errorCode: functions.https.FunctionsErrorCode,
-  msg: string
-) => {
-  return new functions.https.HttpsError(errorCode, msg);
-};
+  const [playerRef, plyr] = await getDocRefAndData<Player>(
+    `players/${context.auth.uid}`
+  );
+  const player = plyr as Player;
+
+  if (player.roomID) await leaveRoomFunction(context);
+
+  const roomsCollectionRef = await getCollectionRef<Room>("rooms");
+  const newRoom = await roomsCollectionRef.add({
+    roomOwnerUID: player.uid,
+    roomOwnerName: player.playerName,
+    gameStatus: "Not Ready",
+    currNumPlayers: 1,
+    players: [{ playerName: player.playerName, playerUID: player.uid }],
+    playersUID: [player.uid],
+  });
+
+  const newRoomID = newRoom.id;
+  const playersCollectionInRoomRef = await getCollectionRef<RoomPlayer>(
+    `rooms/${newRoomID}/players`
+  );
+  await playersCollectionInRoomRef.add({
+    playerName: player.playerName,
+    uid: player.uid,
+    isReady: false,
+  });
+
+  await playerRef.update({ roomID: newRoomID });
+});
