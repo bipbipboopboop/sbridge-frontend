@@ -105,6 +105,11 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   // Check what to do after player leaves.
   // If room only has one player. Delete the room
   if (room.currNumPlayers == 1) {
+    const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
+      `rooms/${roomRef.id}/players/${player.uid}`
+    );
+    console.log({ dltPlyrPath: `rooms/${roomRef.id}/players/${player.uid}` });
+    await roomPlayerRef.delete();
     await roomRef.delete();
     return;
   }
@@ -118,6 +123,13 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
     players: room.players.filter((rmPlyr) => rmPlyr.playerUID !== player.uid),
     playersUID: room.playersUID.filter((rmPlyrUID) => rmPlyrUID !== player.uid),
   };
+  // Delete this player from the roomPlayer collection
+  const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
+    `rooms/${roomRef.id}/players/${player.uid}`
+  );
+  console.log({ dltPlyrPath: `rooms/${roomRef.id}/players/${player.uid}` });
+  await roomPlayerRef.delete();
+
   // If this player is an owner, make the next player Owner.
   if (isPlayerOwner) {
     newRoom.roomOwnerUID = newRoom.players[0].playerUID;
@@ -137,7 +149,7 @@ export const createRoom = functions.https.onCall(async (_, context) => {
 
   if (player.roomID) await leaveRoomFunction(context);
 
-  const roomsCollectionRef = await getCollectionRef<Room>("rooms");
+  const roomsCollectionRef = getCollectionRef<Room>("rooms");
   const newRoom = await roomsCollectionRef.add({
     roomOwnerUID: player.uid,
     roomOwnerName: player.playerName,
@@ -147,15 +159,14 @@ export const createRoom = functions.https.onCall(async (_, context) => {
     playersUID: [player.uid],
   });
 
-  const newRoomID = newRoom.id;
-  const playersCollectionInRoomRef = await getCollectionRef<RoomPlayer>(
-    `rooms/${newRoomID}/players`
+  const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
+    `rooms/${newRoom.id}/players/${player.uid}`
   );
-  await playersCollectionInRoomRef.add({
+  roomPlayerRef.set({
     playerName: player.playerName,
     uid: player.uid,
     isReady: false,
   });
 
-  await playerRef.update({ roomID: newRoomID });
+  await playerRef.update({ roomID: newRoom.id });
 });

@@ -14,7 +14,7 @@ const getDocRefAndData = async <T>(
   return [ref, data];
 };
 
-const getCollectionRef = async <T>(path: string) => {
+const getCollectionRef = <T>(path: string) => {
   const ref = admin.firestore().collection(path) as CollectionReference<T>;
   return ref;
 };
