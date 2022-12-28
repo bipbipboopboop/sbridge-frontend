@@ -27,23 +27,18 @@ const usePlayer = () => {
     : null;
 
   const [playerData] = useDocumentData<PlayerType | null>(currPlayerRef);
+
   const [deleteUser] = useDeleteUser(auth);
-
-  // const logOut = async () => {
-  //   try {
-  //     await deleteUser();
-  //     console.log(`User logged out!`);
-  //   } catch (e: any) {
-  //     alert(e.message);
-  //   }
-  // };
-
-  const [deletePlayer, loading] = useHttpsCallable(functions, "deletePlayer");
+  const [deletePlayer] = useHttpsCallable<void, null>(
+    functions,
+    "deletePlayer"
+  );
 
   const logOut = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
     const result = await deletePlayer();
     await deleteUser();
+    console.log(`User logged out!`);
     console.log({ result });
   };
 

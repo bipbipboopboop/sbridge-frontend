@@ -9,18 +9,39 @@ import * as admin from "firebase-admin";
 // });
 admin.initializeApp();
 
+/**
+ * Deletes a player if they are logged in.
+ */
 export const deletePlayer = functions.https.onCall(async (data, context) => {
   if (!context.auth) {
-    console.log({ status: "error", code: 401, message: "Not signed in" });
-    return { status: "error", code: 401, message: "Not signed in" };
+    const result = { status: "error", code: 401, message: "Not signed in" };
+    return result;
   }
   const playerUID = context.auth.uid;
   const playerRef = admin.firestore().doc(`players/${playerUID}`);
   console.log({ playerRef: JSON.stringify(playerRef) });
   await playerRef.delete();
-  return {
+  const result = {
     status: "success",
-    code: 401,
+    code: 202,
     message: "Successfully deleted player",
   };
+  return result;
+});
+
+export const addPlayer = functions.https.onCall(async (playerName, context) => {
+  if (!context.auth) {
+    const result = { status: "error", code: 401, message: "Not signed in" };
+    return result;
+  }
+  const playerUID = context.auth.uid;
+  const playerRef = admin.firestore().doc(`players/${playerUID}`);
+  console.log({ playerRef: JSON.stringify(playerRef) });
+  await playerRef.set({ playerName, uid: playerUID, roomID: null });
+  const result = {
+    status: "success",
+    code: 201,
+    message: "Successfully added player",
+  };
+  return result;
 });
