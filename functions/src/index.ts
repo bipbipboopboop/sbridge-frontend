@@ -8,10 +8,6 @@ import { getCollectionRef, getDocRefAndData, HTTPError } from "./utils/utils";
 // // Start writing functions
 // // https://firebase.google.com/docs/functions/typescript
 //
-// export const helloWorld = functions.https.onRequest((request, response) => {
-//   functions.logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
 admin.initializeApp();
 
 /**
@@ -27,6 +23,7 @@ export const deletePlayer = functions.https.onCall(async (data, context) => {
   const playerUID = context.auth.uid;
   const playerRef = admin.firestore().doc(`players/${playerUID}`);
   console.log({ playerRef: JSON.stringify(playerRef) });
+  await leaveRoomFunction(context);
   await playerRef.delete();
   const result = {
     status: "success",
@@ -64,16 +61,21 @@ export const addPlayer = functions.https.onCall(
     return result;
   }
 );
+
 /**
- * Leave the current room of a player.
- * Deletes the room immediately if they are the only one
- * If they are the owner. If they are, find a new owner for the room.
- * Else, leave immediately.
+ * The the room of the current player.
  */
 export const leaveRoom = functions.https.onCall(async (_, context) => {
   await leaveRoomFunction(context);
 });
 
+/**
+ * A helper function for leaving the room of the current player.
+ * Deletes the room immediately if the current player is the only one in the room.
+ * If they are the owner, find a new owner for the room.
+ * Else, leave immediately.
+ * @param context - The interface for metadata for the API as passed to the handler onCall handler.
+ */
 const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   // Check if player is in any room or not
   if (!context.auth)
@@ -98,7 +100,7 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   if (!isRoomHasPlayer)
     throw HTTPError("failed-precondition", "Player not in this room");
 
-  // Delete room from player
+  // Update the player
   const updatedPlayer = { ...player, roomID: null } as Player;
   playerRef.update(updatedPlayer);
 
@@ -123,7 +125,7 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
     players: room.players.filter((rmPlyr) => rmPlyr.playerUID !== player.uid),
     playersUID: room.playersUID.filter((rmPlyrUID) => rmPlyrUID !== player.uid),
   };
-  // Delete this player from the roomPlayer collection
+  // Delete this player from the roomPlayer sub-collection
   const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
     `rooms/${roomRef.id}/players/${player.uid}`
   );
@@ -138,6 +140,10 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   await roomRef.update(newRoom);
 };
 
+/**
+ * Create a room and leave the existing one if the player is already in one.
+ * The `roomOwner` will be set to the player calling this function.
+ */
 export const createRoom = functions.https.onCall(async (_, context) => {
   if (!context.auth)
     throw HTTPError("failed-precondition", "This player is not authenticated!");
@@ -170,3 +176,67 @@ export const createRoom = functions.https.onCall(async (_, context) => {
 
   await playerRef.update({ roomID: newRoom.id });
 });
+
+/**
+ * Join a room with id `roomID`
+ * @param roomID{string} ID of the room.
+ */
+export const joinRoom = functions.https.onCall(
+  async (roomID: string, context) => {
+    if (!context.auth)
+      throw HTTPError(
+        "failed-precondition",
+        "This player is not authenticated!"
+      );
+
+    // Find the desired room, throw error if room is not found
+    const [roomRef, room] = await getDocRefAndData<Room>(`rooms/${roomID}`);
+    if (!room)
+      throw HTTPError("failed-precondition", "This room doesn't exist");
+
+    // Check if room is full, throw error if it is.
+    if (room.currNumPlayers >= 4)
+      throw HTTPError(
+        "failed-precondition",
+        `Room ${roomID} is full, please try another one`
+      );
+
+    // Make the player leave the room if the player is already in a room.
+    const [playerRef, plyr] = await getDocRefAndData<Player>(
+      `players/${context.auth.uid}`
+    );
+    const player = plyr as Player;
+
+    if (player.roomID) await leaveRoomFunction(context);
+
+    // Update the room
+    let newRoom: Room;
+    newRoom = {
+      ...room,
+      // Add this player into room with roomID.
+      currNumPlayers: room.currNumPlayers + 1,
+      players: room.players.concat([
+        {
+          playerName: player.playerName,
+          playerUID: player.uid,
+        },
+      ]),
+      playersUID: room.playersUID.concat([player.uid]),
+    };
+    roomRef.update(newRoom);
+
+    // Add this player from the roomPlayer sub-collection
+    const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
+      `rooms/${roomRef.id}/players/${player.uid}`
+    );
+
+    await roomPlayerRef.set({
+      playerName: player.playerName,
+      uid: player.uid,
+      isReady: false,
+    });
+
+    // Update the player
+    playerRef.update({ roomID });
+  }
+);
