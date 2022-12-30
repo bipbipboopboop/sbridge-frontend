@@ -36,6 +36,7 @@ const Lobby = () => {
   const handleCreate = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     const newRoom = (await createRoom())?.data;
+    console.log({ newRoom });
     newRoom && navigate(`rooms/${newRoom.roomID}`);
   };
 

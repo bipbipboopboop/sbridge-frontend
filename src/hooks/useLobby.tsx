@@ -10,6 +10,11 @@ const useLobby = () => {
   const roomsQuery = query(roomsRef);
 
   const [roomQuerySnapshots] = useCollection(roomsQuery);
+  // const rooms = roomQuerySnapshots?.docs.map((rm) => ({
+  //   roomID: rm.id,
+  //   ...rm.data(),
+  // })) as unknown as Room[];
+
   const rooms = roomQuerySnapshots?.docs.map((rm) => ({
     roomID: rm.id,
     ...rm.data(),

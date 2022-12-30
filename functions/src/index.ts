@@ -176,7 +176,7 @@ export const createRoom = functions.https.onCall(async (_, context) => {
   });
 
   await playerRef.update({ roomID: newRoomRef.id });
-  return newRoom;
+  return { ...newRoom, roomID: newRoomRef.id };
 });
 
 /**
