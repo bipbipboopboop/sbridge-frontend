@@ -8,6 +8,7 @@ import TopNavbar from "./components/navbar/1.Navbar";
 import Lobby from "./pages/Lobby";
 import { Routes, Route } from "react-router-dom";
 import { User } from "firebase/auth";
+import Room from "./pages/Room";
 
 function App() {
   const [user] = useAuthState(auth);
@@ -17,6 +18,8 @@ function App() {
       <TopNavbar />
       <Routes>
         <Route element={<Main {...{ user }} />} path="/" />
+        <Route element={<Room />} path="/rooms/:roomID" />
+        {/* TODO : Add protected routes */}
       </Routes>
     </div>
   );

@@ -45,6 +45,7 @@ const Lobby = () => {
       // const data = (await getDoc(ref)).data();
       // console.log({ data, roomID });
       await joinRoom(roomID);
+      //TODO : Check if is able to join room or not on backend and frontend
       navigate(`rooms/${roomID}`);
     };
 
@@ -57,7 +58,7 @@ const Lobby = () => {
 
   return (
     <div className="w-100 h-100 d-flex">
-      <div className="h-100 w-50 p-3">
+      <div className="h-100 w-50 pt-3 px-3">
         <h1>Rooms</h1>
         <CreateRoomButton
           handleCreate={handleCreate}
@@ -85,7 +86,7 @@ const Lobby = () => {
           ))}
         </div>
       </div>
-      <div className="h-100 w-50 p-3">
+      <div className="h-100 w-50 pt-3 px-3">
         {/* <pre>{JSON.stringify(isPlayerInAnyRoom)}</pre> */}
         <h1>Top Players</h1>
       </div>

@@ -5,10 +5,14 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import ChatMessage from "./2.ChatMessage";
 import ChatInput from "./3.ChatInput";
 import styled from "styled-components";
+type ChatRoomProps = {
+  roomID: string;
+};
 
-const ChatRoom = () => {
+const ChatRoom = (props: ChatRoomProps) => {
+  const { roomID } = props;
   const dummy = useRef<HTMLSpanElement>(document.createElement("span"));
-  const messagesRef = collection(firestore, "messages");
+  const messagesRef = collection(firestore, `rooms/${roomID}/messages`);
   const messagesQuery = query(
     messagesRef,
     orderBy("createdAt", "desc"),
@@ -23,16 +27,16 @@ const ChatRoom = () => {
   }, [messages]);
 
   return (
-    <>
-      <Background className="w-50 h-100 px-5 pt-3">
+    <div className="w-100 h-100">
+      <Background className="h-50">
         <>{console.log({ messages })}</>
         {messages?.reverse().map((msg, index) => (
           <ChatMessage key={index} message={msg} />
         ))}
         <span ref={dummy}></span>
       </Background>
-      <ChatInput />
-    </>
+      <ChatInput roomID={roomID} />
+    </div>
   );
 };
 
