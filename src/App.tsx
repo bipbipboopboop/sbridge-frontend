@@ -20,6 +20,7 @@ function App() {
         <Route element={<Main {...{ user }} />} path="/" />
         <Route element={<Room />} path="/rooms/:roomID" />
         {/* TODO : Add protected routes */}
+        {/* TODO : Redirect to home page if not in room or room doesnt exist */}
       </Routes>
     </div>
   );
