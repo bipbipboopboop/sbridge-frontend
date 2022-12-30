@@ -1,11 +1,13 @@
 import { useParams } from "react-router-dom";
 import ChatRoom from "../components/chatroom/1.ChatRoom";
 import useLobby from "../hooks/useLobby";
+import usePlayer from "../hooks/usePlayer";
 import useRoom from "../hooks/useRoom";
 
 const Room = () => {
   const { roomID } = useParams();
-  const { room, roomPlayers } = useRoom(roomID);
+  const { room, roomPlayers, handleToggleReady, isPlayerReady } =
+    useRoom(roomID);
   const { handleLeave } = useLobby();
 
   console.log({ room, roomPlayers });
@@ -15,12 +17,15 @@ const Room = () => {
       <div className="h-100 w-50 p-3">
         <div>
           <h5 className="m-0 p-0">{`Room ${roomID}`}</h5>
-          <button className="btn btn-primary">Ready</button>
+          <button className="btn btn-primary" onClick={handleToggleReady}>
+            {isPlayerReady ? "I'm Not Ready :(" : "I'm Ready!"}
+          </button>
           <button className="btn btn-primary" onClick={handleLeave}>
             Leave
           </button>
         </div>
         <div>
+          <pre>{JSON.stringify(room)}</pre>
           {roomPlayers?.map((rmPlayer, index) => {
             const isRoomOwner = rmPlayer.uid === room.roomOwnerUID;
             return (

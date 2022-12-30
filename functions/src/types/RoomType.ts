@@ -3,6 +3,7 @@ export type Room = {
   roomOwnerName: string;
   gameStatus: string;
   currNumPlayers: number;
+  currReadyPlayersUID: string[];
   players: {
     playerName: string;
     playerUID: string;

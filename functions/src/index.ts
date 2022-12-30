@@ -4,6 +4,10 @@ import * as admin from "firebase-admin";
 import { Room } from "./types/RoomType";
 import { Player, RoomPlayer } from "./types/PlayerType";
 import { getCollectionRef, getDocRefAndData, HTTPError } from "./utils/utils";
+import {
+  removePlayerFromReadyUIDs,
+  toggleReady as toggleReadyFn,
+} from "./handlers/roomHandlers";
 
 // // Start writing functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -77,7 +81,6 @@ export const leaveRoom = functions.https.onCall(async (_, context) => {
  * @param context - The interface for metadata for the API as passed to the handler onCall handler.
  */
 const leaveRoomFunction = async (context: functions.https.CallableContext) => {
-  // Check if player is in any room or not
   if (!context.auth)
     throw HTTPError("failed-precondition", "This player is not authenticated!");
   // Check if player is in any room or not
@@ -120,8 +123,9 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   let newRoom: Room;
   newRoom = {
     ...room,
-    // Delete this player from room.
+    // Delete this player from room and remove the player from ready array.
     currNumPlayers: room.currNumPlayers - 1,
+    currReadyPlayersUID: removePlayerFromReadyUIDs(room, player),
     players: room.players.filter((rmPlyr) => rmPlyr.playerUID !== player.uid),
     playersUID: room.playersUID.filter((rmPlyrUID) => rmPlyrUID !== player.uid),
   };
@@ -161,6 +165,7 @@ export const createRoom = functions.https.onCall(async (_, context) => {
     roomOwnerName: player.playerName,
     gameStatus: "Not Ready",
     currNumPlayers: 1,
+    currReadyPlayersUID: [],
     players: [{ playerName: player.playerName, playerUID: player.uid }],
     playersUID: [player.uid],
   };
@@ -242,3 +247,5 @@ export const joinRoom = functions.https.onCall(
     playerRef.update({ roomID });
   }
 );
+
+export const toggleReady = toggleReadyFn;
