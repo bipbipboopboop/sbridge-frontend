@@ -7,5 +7,6 @@ export type Player = {
 
 export type RoomPlayer = {
   playerName: string;
-  playerUID: string;
+  uid: string;
+  isReady: boolean;
 };

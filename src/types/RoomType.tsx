@@ -15,6 +15,6 @@ export type Room = {
   roomOwnerName: string;
   gameStatus: string;
   currNumPlayers: number;
-  players: RoomPlayer[];
+  players: { playerName: string; playerUID: string }[];
   playersUID: string[];
 };

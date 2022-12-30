@@ -16,45 +16,19 @@ import { auth } from "../utils/firebase";
 import CreateRoomButton from "../components/lobby/CreateRoomButton";
 import LeaveRoomButton from "../components/lobby/LeaveRoomButton";
 import JoinRoomButton from "../components/lobby/JoinRoomButton";
-import { useNavigate } from "react-router-dom";
 
 const Lobby = () => {
   const [user] = useAuthState(auth);
   const { isPlayerInAnyRoom } = usePlayer();
   const {
     rooms,
-    createRoom,
-    joinRoom,
-    leaveRoom,
     isCreatingRoom,
     isJoiningRoom,
     isLeavingRoom,
+    handleCreate,
+    handleJoin,
+    handleLeave,
   } = useLobby();
-
-  const navigate = useNavigate();
-
-  const handleCreate = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    const newRoom = (await createRoom())?.data;
-    console.log({ newRoom });
-    newRoom && navigate(`rooms/${newRoom.roomID}`);
-  };
-
-  const handleJoin =
-    (roomID: string) => async (e: React.MouseEvent<HTMLElement>) => {
-      e.preventDefault();
-      // const ref = doc(firestore, `rooms/${roomID}`);
-      // const data = (await getDoc(ref)).data();
-      // console.log({ data, roomID });
-      await joinRoom(roomID);
-      //TODO : Check if is able to join room or not on backend and frontend
-      navigate(`rooms/${roomID}`);
-    };
-
-  const handleLeave = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    leaveRoom();
-  };
 
   console.log({ rooms });
 

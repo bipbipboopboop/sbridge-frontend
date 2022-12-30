@@ -8,6 +8,7 @@ import { useDocumentData } from "react-firebase-hooks/firestore";
 
 import { Player } from "../types/PlayerType";
 import { useHttpsCallable } from "react-firebase-hooks/functions";
+import { useNavigate } from "react-router-dom";
 
 const usePlayer = () => {
   const currPlayerUID = getUID();
@@ -29,12 +30,14 @@ const usePlayer = () => {
     "deletePlayer"
   );
 
+  const navigate = useNavigate();
   const logOut = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
     const result = await deletePlayer();
     await deleteUser();
     console.log(`User logged out!`);
     console.log({ result });
+    navigate("/");
   };
 
   const isPlayerInAnyRoom = playerData?.roomID ? true : false;
