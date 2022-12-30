@@ -3,7 +3,7 @@ import { RoomPlayer } from "../types/PlayerType";
 
 import {
   checkIfRoomContainsPlayer,
-  checkIsPlayerInRoom,
+  checkIsPlayerHasRoom,
   checkIsPlayerRoomExist,
   togglePlayerReady,
   updateReadyPlayersUID,
@@ -16,8 +16,8 @@ export const toggleReady = functions.https.onCall(async (_: void, context) => {
   if (!context.auth)
     throw HTTPError("failed-precondition", "This player is not authenticated!");
 
-  // Throw Error if player is not in any room. Return player if otherwise
-  const player = await checkIsPlayerInRoom(context);
+  // Throw Error if player has no room. Return player if otherwise
+  const player = (await checkIsPlayerHasRoom(context))[1];
 
   // Defensive code, player's room should exist if player is in a room.
   // Throw Error if player's room doesn't exist. Return player's room if otherwise
