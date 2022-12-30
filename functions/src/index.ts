@@ -4,10 +4,8 @@ import * as admin from "firebase-admin";
 import { Room } from "./types/RoomType";
 import { Player, RoomPlayer } from "./types/PlayerType";
 import { getCollectionRef, getDocRefAndData, HTTPError } from "./utils/utils";
-import {
-  removePlayerFromReadyUIDs,
-  toggleReady as toggleReadyFn,
-} from "./handlers/roomHandlers";
+import { toggleReady as toggleReadyFn } from "./handlers/roomHandlers";
+import { removePlayerFromReadyUIDs } from "./utils/player_utils";
 
 // // Start writing functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -26,7 +24,7 @@ export const deletePlayer = functions.https.onCall(async (data, context) => {
   }
   const playerUID = context.auth.uid;
   const playerRef = admin.firestore().doc(`players/${playerUID}`);
-  console.log({ playerRef: JSON.stringify(playerRef) });
+
   await leaveRoomFunction(context);
   await playerRef.delete();
   const result = {
@@ -113,13 +111,13 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
     const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
       `rooms/${roomRef.id}/players/${player.uid}`
     );
-    console.log({ dltPlyrPath: `rooms/${roomRef.id}/players/${player.uid}` });
+
     await roomPlayerRef.delete();
     await roomRef.delete();
     return;
   }
-  const isPlayerOwner = room.roomOwnerUID === player.uid;
-  // Else, the room has multiple player.
+
+  // Else, the room has multiple players.
   let newRoom: Room;
   newRoom = {
     ...room,
@@ -133,10 +131,11 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
     `rooms/${roomRef.id}/players/${player.uid}`
   );
-  console.log({ dltPlyrPath: `rooms/${roomRef.id}/players/${player.uid}` });
+
   await roomPlayerRef.delete();
 
   // If this player is an owner, make the next player Owner.
+  const isPlayerOwner = room.roomOwnerUID === player.uid;
   if (isPlayerOwner) {
     newRoom.roomOwnerUID = newRoom.players[0].playerUID;
     newRoom.roomOwnerName = newRoom.players[0].playerName;
@@ -202,7 +201,8 @@ export const joinRoom = functions.https.onCall(
       throw HTTPError("failed-precondition", "This room doesn't exist");
 
     // Check if room is full, throw error if it is.
-    if (room.currNumPlayers >= 4)
+    const isRoomFull = room.currNumPlayers >= 4;
+    if (isRoomFull)
       throw HTTPError(
         "failed-precondition",
         `Room ${roomID} is full, please try another one`
