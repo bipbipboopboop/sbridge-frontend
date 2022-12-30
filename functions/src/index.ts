@@ -156,17 +156,18 @@ export const createRoom = functions.https.onCall(async (_, context) => {
   if (player.roomID) await leaveRoomFunction(context);
 
   const roomsCollectionRef = getCollectionRef<Room>("rooms");
-  const newRoom = await roomsCollectionRef.add({
+  const newRoom: Room = {
     roomOwnerUID: player.uid,
     roomOwnerName: player.playerName,
     gameStatus: "Not Ready",
     currNumPlayers: 1,
     players: [{ playerName: player.playerName, playerUID: player.uid }],
     playersUID: [player.uid],
-  });
+  };
+  const newRoomRef = await roomsCollectionRef.add(newRoom);
 
   const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
-    `rooms/${newRoom.id}/players/${player.uid}`
+    `rooms/${newRoomRef.id}/players/${player.uid}`
   );
   roomPlayerRef.set({
     playerName: player.playerName,
@@ -174,7 +175,8 @@ export const createRoom = functions.https.onCall(async (_, context) => {
     isReady: false,
   });
 
-  await playerRef.update({ roomID: newRoom.id });
+  await playerRef.update({ roomID: newRoomRef.id });
+  return newRoom;
 });
 
 /**

@@ -38,7 +38,8 @@ const usePlayer = () => {
   };
 
   const isPlayerInAnyRoom = playerData?.roomID ? true : false;
-  console.log({ playerData, isLoadingPlayer, isPlayerInAnyRoom });
+  // console.log({ playerData, isLoadingPlayer, isPlayerInAnyRoom });
+  // TODO : CHECK WHY KEEP RERENDERING
   return { playerData, isLoadingPlayer, isPlayerInAnyRoom, logOut };
 };
 

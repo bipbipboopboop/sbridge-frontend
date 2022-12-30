@@ -33,9 +33,10 @@ const Lobby = () => {
 
   const navigate = useNavigate();
 
-  const handleCreate = (e: React.MouseEvent<HTMLElement>) => {
+  const handleCreate = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    createRoom();
+    const newRoom = (await createRoom())?.data;
+    newRoom && navigate(`rooms/${newRoom.roomID}`);
   };
 
   const handleJoin =

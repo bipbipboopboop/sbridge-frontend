@@ -15,7 +15,10 @@ const useLobby = () => {
     ...rm.data(),
   })) as unknown as Room[];
 
-  const [create, isCreatingRoom] = useHttpsCallable(functions, "createRoom");
+  const [create, isCreatingRoom] = useHttpsCallable<void, Room>(
+    functions,
+    "createRoom"
+  );
   const [joinRoom, isJoiningRoom] = useHttpsCallable(functions, "joinRoom");
   const [leaveRoom, isLeavingRoom] = useHttpsCallable(functions, "leaveRoom");
 
