@@ -32,6 +32,7 @@ const usePlayer = () => {
   const logOut = async (e: React.FormEvent<HTMLElement>) => {
     e.preventDefault();
     const result = await deletePlayer();
+    await deleteUser();
     console.log(`User logged out!`);
     console.log({ result });
   };

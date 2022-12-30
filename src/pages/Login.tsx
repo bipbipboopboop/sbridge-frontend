@@ -30,6 +30,7 @@ const Login = () => {
   const LoginForm = (
     <>
       <h2>Enter your name</h2>
+      {/* TODO : Check the reason usePlayer retriggers everytype user types */}
       <form className="d-flex flex-column" onSubmit={handleSignIn}>
         <input
           className="mt-3"
