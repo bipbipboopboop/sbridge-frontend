@@ -5,12 +5,7 @@ import { Room } from "./types/RoomType";
 import { Player, RoomPlayer } from "./types/PlayerType";
 import { getCollectionRef, getDocRefAndData, HTTPError } from "./utils/utils";
 import { toggleReady as toggleReadyFn } from "./handlers/roomHandlers";
-import {
-  checkIfRoomContainsPlayer,
-  checkIsPlayerHasRoom,
-  checkIsPlayerRoomExist,
-  removePlayerFromReadyUIDs,
-} from "./utils/player_utils";
+import { removePlayerFromReadyUIDs } from "./utils/player_utils";
 
 // // Start writing functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -86,17 +81,25 @@ export const leaveRoom = functions.https.onCall(async (_, context) => {
 const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   if (!context.auth)
     throw HTTPError("failed-precondition", "This player is not authenticated!");
+  // Check if player is in any room or not
+  const [playerRef, plyr] = await getDocRefAndData<Player>(
+    `players/${context.auth.uid}`
+  );
+  const player = plyr as Player;
+  const isPlayerInRoom = player.roomID !== null;
+  if (!isPlayerInRoom)
+    throw HTTPError("failed-precondition", "Player is not room");
 
-  // Throw Error if player has no room. Return player if otherwise
-  const [playerRef, player] = await checkIsPlayerHasRoom(context);
+  // Check if room exists or not
+  const [roomRef, room] = await getDocRefAndData<Room>(
+    `rooms/${player.roomID}`
+  );
+  if (!room) throw HTTPError("not-found", "This room doesn't exist!");
 
-  // Defensive code, player's room should exist if player is in a room.
-  // Throw Error if player's room doesn't exist. Return player's room if otherwise
-  const [roomRef, room] = await checkIsPlayerRoomExist(player);
-
-  // Defensive code, player's room should contain player.
-  // Throw error if player's room doesn't contain player.
-  checkIfRoomContainsPlayer(room, player);
+  // Check if player is in this room or not
+  const isRoomHasPlayer = room.playersUID.includes(player.uid);
+  if (!isRoomHasPlayer)
+    throw HTTPError("failed-precondition", "Player not in this room");
 
   // Update the player
   const updatedPlayer = { ...player, roomID: null } as Player;
@@ -105,7 +108,12 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   // Check what to do after player leaves.
   // If room only has one player. Delete the room
   if (room.currNumPlayers == 1) {
-    await deleteRoom(roomRef, player);
+    const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
+      `rooms/${roomRef.id}/players/${player.uid}`
+    );
+
+    await roomPlayerRef.delete();
+    await roomRef.delete();
     return;
   }
 
@@ -119,6 +127,12 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
     players: room.players.filter((rmPlyr) => rmPlyr.playerUID !== player.uid),
     playersUID: room.playersUID.filter((rmPlyrUID) => rmPlyrUID !== player.uid),
   };
+  // Delete this player from the roomPlayer sub-collection
+  const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
+    `rooms/${roomRef.id}/players/${player.uid}`
+  );
+
+  await roomPlayerRef.delete();
 
   // If this player is an owner, make the next player Owner.
   const isPlayerOwner = room.roomOwnerUID === player.uid;
@@ -126,9 +140,6 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
     newRoom.roomOwnerUID = newRoom.players[0].playerUID;
     newRoom.roomOwnerName = newRoom.players[0].playerName;
   }
-
-  // Delete this player from the roomPlayer sub-collection
-  await deleteRoomPlayer(roomRef, player);
   await roomRef.update(newRoom);
 };
 
@@ -238,26 +249,3 @@ export const joinRoom = functions.https.onCall(
 );
 
 export const toggleReady = toggleReadyFn;
-
-const deleteRoomPlayer = async (
-  roomRef: admin.firestore.DocumentReference<Room>,
-  player: Player
-) => {
-  const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
-    `rooms/${roomRef.id}/players/${player.uid}`
-  );
-
-  await roomPlayerRef.delete();
-};
-
-const deleteRoom = async (
-  roomRef: admin.firestore.DocumentReference<Room>,
-  player: Player
-) => {
-  const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
-    `rooms/${roomRef.id}/players/${player.uid}`
-  );
-
-  await roomPlayerRef.delete();
-  await roomRef.delete();
-};
