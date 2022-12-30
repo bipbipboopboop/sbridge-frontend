@@ -16,6 +16,7 @@ import { auth } from "../utils/firebase";
 import CreateRoomButton from "../components/lobby/CreateRoomButton";
 import LeaveRoomButton from "../components/lobby/LeaveRoomButton";
 import JoinRoomButton from "../components/lobby/JoinRoomButton";
+import { useNavigate } from "react-router-dom";
 
 const Lobby = () => {
   const [user] = useAuthState(auth);
@@ -30,18 +31,22 @@ const Lobby = () => {
     isLeavingRoom,
   } = useLobby();
 
+  const navigate = useNavigate();
+
   const handleCreate = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     createRoom();
   };
 
-  const handleJoin = (roomID: string) => (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    // const ref = doc(firestore, `rooms/${roomID}`);
-    // const data = (await getDoc(ref)).data();
-    // console.log({ data, roomID });
-    joinRoom(roomID);
-  };
+  const handleJoin =
+    (roomID: string) => async (e: React.MouseEvent<HTMLElement>) => {
+      e.preventDefault();
+      // const ref = doc(firestore, `rooms/${roomID}`);
+      // const data = (await getDoc(ref)).data();
+      // console.log({ data, roomID });
+      await joinRoom(roomID);
+      navigate(`rooms/${roomID}`);
+    };
 
   const handleLeave = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
