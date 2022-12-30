@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import ChatRoom from "../components/chatroom/1.ChatRoom";
+import ReadyButton from "../components/room/ReadyButton";
 import useLobby from "../hooks/useLobby";
-import usePlayer from "../hooks/usePlayer";
 import useRoom from "../hooks/useRoom";
 
 const Room = () => {
@@ -17,20 +17,21 @@ const Room = () => {
       <div className="h-100 w-50 p-3">
         <div>
           <h5 className="m-0 p-0">{`Room ${roomID}`}</h5>
-          <button className="btn btn-primary" onClick={handleToggleReady}>
-            {isPlayerReady ? "I'm Not Ready :(" : "I'm Ready!"}
-          </button>
-          <button className="btn btn-primary" onClick={handleLeave}>
+          <ReadyButton
+            handleToggleReady={handleToggleReady}
+            isPlayerReady={isPlayerReady}
+          />
+          <button className="btn btn-primary mx-5" onClick={handleLeave}>
             Leave
           </button>
         </div>
         <div>
-          <pre>{JSON.stringify(room)}</pre>
+          {/* <pre>{JSON.stringify(room)}</pre> */}
           {roomPlayers?.map((rmPlayer, index) => {
             const isRoomOwner = rmPlayer.uid === room.roomOwnerUID;
             return (
               <div className="my-5" key={index}>
-                <p>{`Name : ${rmPlayer.playerName} ${
+                <p>{`Player ${rmPlayer.playerName} ${
                   isRoomOwner ? "👑" : ""
                 } - ${rmPlayer.isReady ? "Ready" : "Not Ready"}`}</p>
               </div>

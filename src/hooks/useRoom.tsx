@@ -41,6 +41,7 @@ const useRoom = (roomID: string | undefined) => {
     roomPlayers,
     isRoomLoading,
     isLoadingRoomPlayers,
+    isTogglingReady,
     isPlayerReady,
     handleToggleReady,
   };
