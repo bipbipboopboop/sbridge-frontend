@@ -15,13 +15,17 @@ function App() {
 
   return (
     <div className="App">
-      <TopNavbar />
-      <Routes>
-        <Route element={<Main {...{ user }} />} path="/" />
-        <Route element={<Room />} path="/rooms/:roomID" />
-        {/* TODO : Add protected routes */}
-        {/* TODO : Redirect to home page if not in room or room doesnt exist */}
-      </Routes>
+      <div className="w-100" style={{ height: "7vh" }}>
+        <TopNavbar />
+      </div>
+      <div className="w-100" style={{ height: "93vh" }}>
+        <Routes>
+          <Route element={<Main {...{ user }} />} path="/" />
+          <Route element={<Room />} path="/rooms/:roomID" />
+          {/* TODO : Add protected routes */}
+          {/* TODO : Redirect to home page if not in room or room doesnt exist */}
+        </Routes>
+      </div>
     </div>
   );
 }

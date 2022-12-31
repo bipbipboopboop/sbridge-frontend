@@ -27,14 +27,15 @@ const ChatRoom = (props: ChatRoomProps) => {
   }, [messages]);
 
   return (
-    <div className="w-100 h-100">
-      <Background className="h-50">
+    <div className="w-100 h-100 d-flex flex-column">
+      <Background>
         <>{console.log({ messages })}</>
         {messages?.reverse().map((msg, index) => (
           <ChatMessage key={index} message={msg} />
         ))}
         <span ref={dummy}></span>
       </Background>
+
       <ChatInput roomID={roomID} />
     </div>
   );
@@ -43,6 +44,7 @@ const ChatRoom = (props: ChatRoomProps) => {
 export default ChatRoom;
 
 const Background = styled.div`
+  height: 100vh;
   background: rgb(129, 251, 184);
   background: linear-gradient(
     90deg,

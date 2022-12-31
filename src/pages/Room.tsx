@@ -13,7 +13,7 @@ const Room = () => {
   console.log({ room, roomPlayers });
 
   return (
-    <div className="w-100 h-100 d-flex">
+    <div className="w-100 d-flex" style={{ height: "93vh" }}>
       <div className="h-100 w-50 p-3">
         <div>
           <h5 className="m-0 p-0">{`Room ${roomID}`}</h5>

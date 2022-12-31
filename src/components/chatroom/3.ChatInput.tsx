@@ -1,5 +1,6 @@
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { useState, useCallback, ChangeEvent, FormEvent } from "react";
+import styled from "styled-components";
 import { auth, firestore } from "../../utils/firebase";
 
 type ChatInputProps = {
@@ -32,13 +33,38 @@ const ChatInput = (props: ChatInputProps) => {
   };
 
   return (
-    <form onSubmit={sendMessage}>
-      <input type="text" onChange={onChangeInput} value={textInput} />
-      <button type="submit" disabled={!textInput}>
+    <form
+      className="w-100 d-flex"
+      style={{ height: "7vh" }}
+      onSubmit={sendMessage}
+    >
+      <TextInput
+        className="w-100"
+        type="text"
+        onChange={onChangeInput}
+        value={textInput}
+      />
+      <SendButton type="submit" disabled={!textInput}>
         🕊️
-      </button>
+      </SendButton>
     </form>
   );
 };
 
 export default ChatInput;
+
+const TextInput = styled.input`
+  line-height: 1.5;
+  width: 100%;
+  font-size: 1.5rem;
+  background: rgb(58, 58, 58);
+  color: white;
+  outline: none;
+  border: none;
+  padding: 0 10px;
+`;
+
+const SendButton = styled.button`
+  width: 10%;
+  background-color: rgb(56, 56, 143);
+`;

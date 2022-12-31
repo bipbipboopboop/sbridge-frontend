@@ -6,3 +6,6 @@
   justify-content: flex-start;
   align-items: center;
 }
+.firebase-emulator-warning {
+  display: none;
+}
