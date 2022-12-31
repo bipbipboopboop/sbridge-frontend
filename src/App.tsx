@@ -12,6 +12,7 @@ import Room from "./pages/Room";
 
 function App() {
   const [user] = useAuthState(auth);
+  console.log({ user });
 
   return (
     <div className="App">

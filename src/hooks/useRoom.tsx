@@ -26,9 +26,18 @@ const useRoom = (roomID: string | undefined) => {
     functions,
     "toggleReady"
   );
+
   const { playerData } = usePlayer();
   const isPlayerReady = playerData?.uid
     ? room?.currReadyPlayersUID.includes(playerData.uid)
+    : false;
+
+  const isPlayerInRoom = playerData
+    ? room?.playersUID?.includes(playerData.uid)
+    : false;
+
+  const isPlayerAnOwner = playerData
+    ? room?.roomOwnerUID === playerData.uid
     : false;
 
   const handleToggleReady = async (e: React.MouseEvent<HTMLElement>) => {
@@ -36,13 +45,21 @@ const useRoom = (roomID: string | undefined) => {
     toggleReady();
   };
 
+  const isGameStartable = room?.currReadyPlayersUID.length === 4;
+
   return {
     room,
     roomPlayers,
+
+    isPlayerInRoom,
+    isPlayerReady,
+    isPlayerAnOwner,
+    isGameStartable,
+
     isRoomLoading,
     isLoadingRoomPlayers,
     isTogglingReady,
-    isPlayerReady,
+
     handleToggleReady,
   };
 };
