@@ -84,3 +84,21 @@ export const addPlayerToReadyUIDs = (room: Room, player: Player) => {
     ? room.currReadyPlayersUID.concat([player.uid])
     : room.currReadyPlayersUID;
 };
+
+export const checkPlayerAccessPrivilege = async (context: CallableContext) => {
+  if (!context.auth)
+    throw HTTPError("failed-precondition", "This player is not authenticated!");
+
+  // Throw Error if player has no room. Return player if otherwise
+  const [playerRef, player] = await checkIsPlayerHasRoom(context);
+
+  // Defensive code, player's room should exist if player is in a room.
+  // Throw Error if player's room doesn't exist. Return player's room if otherwise
+  const [roomRef, room] = await checkIsPlayerRoomExist(player);
+
+  // Defensive code, player's room should contain player.
+  // Throw error if player's room doesn't contain player.
+  checkIfRoomContainsPlayer(room, player);
+
+  return { playerRef, player, roomRef, room };
+};

@@ -4,7 +4,10 @@ import * as admin from "firebase-admin";
 import { Room } from "./types/RoomType";
 import { Player, RoomPlayer } from "./types/PlayerType";
 import { getCollectionRef, getDocRefAndData, HTTPError } from "./utils/utils";
-import { toggleReady as toggleReadyFn } from "./handlers/roomHandlers";
+import {
+  toggleReady as toggleReadyFn,
+  startGame as startGameFn,
+} from "./handlers/roomHandlers";
 import { removePlayerFromReadyUIDs } from "./utils/player_utils";
 
 // // Start writing functions
@@ -249,3 +252,4 @@ export const joinRoom = functions.https.onCall(
 );
 
 export const toggleReady = toggleReadyFn;
+export const startGame = startGameFn;

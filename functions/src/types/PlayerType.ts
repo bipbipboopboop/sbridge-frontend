@@ -9,3 +9,8 @@ export type RoomPlayer = {
   uid: string;
   isReady: boolean;
 };
+
+export type SimpleRoomPlayer = {
+  playerName: string;
+  playerUID: string;
+};
