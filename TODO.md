@@ -11,8 +11,13 @@ Frontend
 Backend
 
 ```
-1) Implement startGame
-2) Implement castBid
-3) Implement declareBidWinner
-4) Implement playCard write into moves subcollection
+1) Implement toggleReady (Done)
+2) Implement startGame
+3) Implement initGame
+    - Randomly shuffle cards and distribute it to 4 players
+    - Create games
+4) Implement castBid
+5) Implement declareBidWinner
+6) Implement playCard write into moves subcollection
+7) Declare winner
 ```
