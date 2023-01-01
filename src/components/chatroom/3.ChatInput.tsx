@@ -54,9 +54,7 @@ const ChatInput = (props: ChatInputProps) => {
 export default ChatInput;
 
 const TextInput = styled.input`
-  line-height: 1.5;
   width: 100%;
-  font-size: 1.5rem;
   background: rgb(58, 58, 58);
   color: white;
   outline: none;

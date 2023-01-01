@@ -51,6 +51,7 @@ const Background = styled.div`
     rgba(129, 251, 184, 1) 59%,
     rgba(40, 199, 111, 1) 100%
   );
+  padding: 0.5em;
   overflow-y: scroll;
   display: flex;
   flex-direction: column;

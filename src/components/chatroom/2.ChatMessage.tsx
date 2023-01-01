@@ -69,7 +69,12 @@ const ReceivedDiv = styled.div`
 `;
 
 const Name = styled.p`
-  display: f;
+  display: flex;
+  flex-direction: row-reverse;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  padding-right: 0.25em;
 `;
 const SentMessage = (props: {
   msgProps: { playerName: string; text: string };
@@ -78,6 +83,7 @@ const SentMessage = (props: {
     <>
       <SentDiv>
         <div>
+          <Name>{props.msgProps.playerName}</Name>
           <SentP>{props.msgProps.text}</SentP>
         </div>
       </SentDiv>
@@ -91,7 +97,7 @@ const ReceivedMessage = (props: {
   return (
     <ReceivedDiv>
       <div>
-        <p className="d-flex p-0 my-0 mx-4">{props.msgProps.playerName}</p>
+        <Name>{props.msgProps.playerName}</Name>
         <ReceivedP>{props.msgProps.text}</ReceivedP>
       </div>
     </ReceivedDiv>

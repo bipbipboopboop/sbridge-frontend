@@ -1,57 +1,19 @@
 import { useParams } from "react-router-dom";
 
 import ChatRoom from "../components/chatroom/1.ChatRoom";
-import RoomButtons from "../components/room/RoomButtons";
-
-import RoomPlayersList from "../components/room/RoomPlayersList";
-
-/**
- * Hooks
- */
-import useLobby from "../hooks/useLobby";
-import useRoom from "../hooks/useRoom";
+import RoomPanel from "../components/room/RoomPanel";
 
 const Room = () => {
   const { roomID } = useParams();
-  const {
-    room,
-    roomPlayers,
-
-    isPlayerInRoom,
-    isPlayerReady,
-    isPlayerAnOwner,
-    isGameStartable,
-
-    handleToggleReady,
-    handleStartGame,
-  } = useRoom(roomID);
-  const { handleLeave } = useLobby();
 
   // console.log({ room, roomPlayers });
 
   return (
     <div className="w-100 h-100 d-flex">
-      <div className="h-100 w-50 p-3">
-        <div>
-          <h5 className="m-0 p-0">{`Room ${roomID}`}</h5>
-          {isPlayerInRoom && (
-            <RoomButtons
-              isPlayerReady={isPlayerReady}
-              isPlayerAnOwner={isPlayerAnOwner}
-              isGameStartable={isGameStartable}
-              handleToggleReady={handleToggleReady}
-              handleStartGame={handleStartGame}
-              handleLeave={handleLeave}
-            />
-          )}
-        </div>
-        <RoomPlayersList
-          roomOwnerUID={room?.roomOwnerUID}
-          roomPlayers={roomPlayers}
-          isPlayerAnOwner={isPlayerAnOwner}
-        />
+      <div className="h-100 p-3" style={{ width: "70%" }}>
+        <RoomPanel />
       </div>
-      <div className="h-100 w-50">
+      <div className="h-100" style={{ width: "30%" }}>
         <ChatRoom roomID={roomID as string} />
       </div>
     </div>

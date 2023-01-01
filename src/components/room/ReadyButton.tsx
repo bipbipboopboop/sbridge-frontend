@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "react-bootstrap";
 
 type ReadyButtonProps = {
   isPlayerReady: boolean;
@@ -8,9 +9,11 @@ type ReadyButtonProps = {
 const ReadyButton = (props: ReadyButtonProps) => {
   const { isPlayerReady, handleToggleReady } = props;
   return (
-    <button className="btn btn-primary" onClick={handleToggleReady}>
-      {isPlayerReady ? "I'm Not Ready :(" : "I'm Ready!"}
-    </button>
+    <Button onClick={handleToggleReady}>
+      {isPlayerReady ? "Cancel" : "I'm Ready!"}
+    </Button>
+    // <button className="btn btn-primary" onClick={handleToggleReady}>
+    // </button>
   );
 };
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { auth, functions } from "../utils/firebase";
-import { signInAnonymously } from "firebase/auth";
+import { signInAnonymously, updateProfile } from "firebase/auth";
 import { useHttpsCallable } from "react-firebase-hooks/functions";
 import usePlayer from "./usePlayer";
 
@@ -14,6 +14,10 @@ const useLogin = () => {
     try {
       setLoading(true);
       await signInAnonymously(auth);
+      auth.currentUser &&
+        (await updateProfile(auth.currentUser, {
+          displayName: playerName,
+        }));
       await addPlayer(playerName);
       playerData && setLoading(false);
     } catch (err: any) {
