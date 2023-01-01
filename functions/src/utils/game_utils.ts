@@ -26,29 +26,10 @@ const createSimpleRoomPlayer = (
  * @param room
  * @returns
  */
-export const initSimpleRoomPlayers = (room: Room): SimpleRoomPlayer[] => {
+export const updateSimpleRoomPlayersPosition = (
+  room: Room
+): SimpleRoomPlayer[] => {
   return room.players.map((plyr, pos) => createSimpleRoomPlayer(plyr, pos));
-};
-
-const initRoomPlayer = (
-  player: SimpleRoomPlayer,
-  position: number,
-  deck: Deck
-): RoomPlayer => {
-  const startingCardIndex = position * 13;
-  const endingCardIndex = startingCardIndex + 13;
-  const serializedDeck = deck.cards.map((card) => card.toFirestore());
-  const cardsOnHand = serializedDeck.slice(startingCardIndex, endingCardIndex);
-
-  return {
-    playerName: player.playerName,
-    playerUID: player.playerUID,
-    isReady: true,
-    cardsOnHand,
-    position,
-    numTricksWon: 0,
-    tricksWon: [],
-  };
 };
 
 /**
@@ -61,10 +42,11 @@ export const initRoomPlayers = async (
   roomRef: DocumentReference<Room>,
   deck: Deck
 ) => {
+  const serializedDeck = deck.cards.map((card) => card.toFirestore());
+
   const roomPlayersCollection = getCollectionRef<RoomPlayer>(
     `rooms/${roomRef.id}/roomPlayers`
   );
-
   const roomPlayersRef = await roomPlayersCollection.listDocuments();
 
   roomPlayersRef.forEach(async (rmPlyrRef, pos) => {
@@ -81,9 +63,7 @@ export const initRoomPlayers = async (
       isReady: roomPlayer.isReady,
 
       position: pos,
-      cardsOnHand: deck.cards
-        .slice(startingDeckIndex, endDeckIndex)
-        .map((card) => card.toFirestore()),
+      cardsOnHand: serializedDeck.slice(startingDeckIndex, endDeckIndex),
       numTricksWon: 0,
       tricksWon: [],
     });

@@ -113,7 +113,7 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   // If room only has one player. Delete the room
   if (room.currNumPlayers == 1) {
     const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
-      `rooms/${roomRef.id}/players/${player.uid}`
+      `rooms/${roomRef.id}/roomPlayers/${player.uid}`
     );
 
     await roomPlayerRef.delete();
@@ -133,7 +133,7 @@ const leaveRoomFunction = async (context: functions.https.CallableContext) => {
   };
   // Delete this player from the roomPlayer sub-collection
   const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
-    `rooms/${roomRef.id}/players/${player.uid}`
+    `rooms/${roomRef.id}/roomPlayers/${player.uid}`
   );
 
   await roomPlayerRef.delete();

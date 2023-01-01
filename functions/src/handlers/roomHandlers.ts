@@ -2,9 +2,11 @@ import * as functions from "firebase-functions";
 import { BiddingState } from "../types/GameType";
 
 import { RoomPlayer } from "../types/PlayerType";
-import { Room } from "../types/RoomType";
 import { Deck } from "../utils/cards";
-import { initRoomPlayers, initSimpleRoomPlayers } from "../utils/game_utils";
+import {
+  initRoomPlayers,
+  updateSimpleRoomPlayersPosition,
+} from "../utils/game_utils";
 
 import {
   checkIfRoomContainsPlayer,
@@ -75,16 +77,16 @@ export const startGame = functions.https.onCall(async (_: void, context) => {
   const deck = new Deck();
   deck.shuffle();
 
-  const [ref, data] = await getDocRefAndData<Room>(`rooms/${roomRef.id}`);
-  console.log({ ref, data: JSON.stringify(data), deck: JSON.stringify(deck) });
+  // const [ref, data] = await getDocRefAndData<Room>(`rooms/${roomRef.id}`);
+  // console.log({ ref, data: JSON.stringify(data), deck: JSON.stringify(deck) });
 
   const biddingPhase: BiddingState = {
     currHighestBid: null,
-    players: initSimpleRoomPlayers(room),
+    players: updateSimpleRoomPlayersPosition(room),
     turn: 0,
   };
-
   await roomRef.update({ biddingPhase });
+
   await initRoomPlayers(roomRef, deck);
 
   // gamePlayers.forEach(async (gamePlayer) => {
