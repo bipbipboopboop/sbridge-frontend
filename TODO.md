@@ -1,7 +1,7 @@
 Frontend
 
 ```
-1) Only Owner can start game
+1) Only Owner can start game (Done)
 2) Create dummy bidding screen
 3) Create dummy table(game)
 4) Fix chat styling(DONE, but very hackishly)
@@ -12,7 +12,7 @@ Backend
 
 ```
 1) Implement toggleReady (Done)
-2) Implement startGame
+2) Implement startGame (Done)
 3) Implement initGame
     - Randomly shuffle cards and distribute it to 4 players(Done)
     - Create games(Done)

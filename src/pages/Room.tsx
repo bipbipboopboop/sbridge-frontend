@@ -1,8 +1,8 @@
-import { Button } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 
 import ChatRoom from "../components/chatroom/1.ChatRoom";
-import ReadyButton from "../components/room/ReadyButton";
+import RoomButtons from "../components/room/RoomButtons";
+
 import RoomPlayersList from "../components/room/RoomPlayersList";
 
 /**
@@ -27,7 +27,7 @@ const Room = () => {
   } = useRoom(roomID);
   const { handleLeave } = useLobby();
 
-  console.log({ room, roomPlayers });
+  // console.log({ room, roomPlayers });
 
   return (
     <div className="w-100 h-100 d-flex">
@@ -35,24 +35,14 @@ const Room = () => {
         <div>
           <h5 className="m-0 p-0">{`Room ${roomID}`}</h5>
           {isPlayerInRoom && (
-            <>
-              <div className="mt-3">
-                <ReadyButton
-                  handleToggleReady={handleToggleReady}
-                  isPlayerReady={isPlayerReady}
-                />
-                <Button className="mx-3" onClick={handleLeave}>
-                  Leave
-                </Button>
-              </div>
-              <div className="mt-3">
-                {isPlayerAnOwner && (
-                  <Button disabled={!isGameStartable} onClick={handleStartGame}>
-                    Start
-                  </Button>
-                )}
-              </div>
-            </>
+            <RoomButtons
+              isPlayerReady={isPlayerReady}
+              isPlayerAnOwner={isPlayerAnOwner}
+              isGameStartable={isGameStartable}
+              handleToggleReady={handleToggleReady}
+              handleStartGame={handleStartGame}
+              handleLeave={handleLeave}
+            />
           )}
         </div>
         <RoomPlayersList
