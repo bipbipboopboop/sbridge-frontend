@@ -4,7 +4,7 @@ import { BiddingPhase } from "../types/GameType";
 import { RoomPlayer } from "../types/PlayerType";
 import { Room } from "../types/RoomType";
 import { Deck } from "../utils/cards";
-import { initSimpleGamePlayers } from "../utils/game_utils";
+import { initGamePlayers, initSimpleGamePlayers } from "../utils/game_utils";
 
 import {
   checkIfRoomContainsPlayer,
@@ -75,5 +75,10 @@ export const startGame = functions.https.onCall(async (_: void, context) => {
     turn: 0,
   };
 
-  const gameRef = await roomRef.collection("games").add(biddingPhase);
+  await roomRef.collection("games").add(biddingPhase);
+  const gamePlayers = initGamePlayers(room, deck);
+
+  gamePlayers.forEach(async (gamePlayer) => {
+    await roomRef.collection("gamePlayers").add(gamePlayer);
+  });
 });

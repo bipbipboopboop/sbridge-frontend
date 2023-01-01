@@ -19,7 +19,7 @@ export const initSimpleGamePlayers = (room: Room): SimpleGamePlayer[] => {
   return room.players.map((plyr, pos) => createSimpleGamePlayer(plyr, pos));
 };
 
-export const initGamePlayers = (
+const initGamePlayer = (
   player: SimpleRoomPlayer,
   position: number,
   deck: Deck
@@ -36,4 +36,11 @@ export const initGamePlayers = (
     numTricksWon: 0,
     tricksWon: [],
   };
+};
+
+export const initGamePlayers = (room: Room, deck: Deck) => {
+  const gamePlayers = room.players.map((plyr, pos) =>
+    initGamePlayer(plyr, pos, deck)
+  );
+  return gamePlayers;
 };
