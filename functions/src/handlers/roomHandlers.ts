@@ -80,14 +80,16 @@ export const startGame = functions.https.onCall(async (_: void, context) => {
   // const [ref, data] = await getDocRefAndData<Room>(`rooms/${roomRef.id}`);
   // console.log({ ref, data: JSON.stringify(data), deck: JSON.stringify(deck) });
 
+  const simpleRoomPlayers = updateSimpleRoomPlayersPosition(room);
+
   const biddingPhase: BiddingState = {
     currHighestBid: null,
-    players: updateSimpleRoomPlayersPosition(room),
+    players: simpleRoomPlayers,
     turn: 0,
   };
   await roomRef.update({ biddingPhase });
 
-  await initRoomPlayers(roomRef, deck);
+  await initRoomPlayers(roomRef, simpleRoomPlayers, deck);
 
   // gamePlayers.forEach(async (gamePlayer) => {
   //   // await roomRef.collection("gamePlayers").add(gamePlayer);

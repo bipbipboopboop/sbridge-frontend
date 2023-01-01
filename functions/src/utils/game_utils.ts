@@ -6,7 +6,7 @@ import {
 } from "../types/PlayerType";
 import { Room } from "../types/RoomType";
 import { Deck } from "./cards";
-import { getCollectionRef } from "./utils";
+import { getDocRefAndData } from "./utils";
 
 const createSimpleRoomPlayer = (
   player: SimplePlayer,
@@ -40,29 +40,26 @@ export const updateSimpleRoomPlayersPosition = (
  */
 export const initRoomPlayers = async (
   roomRef: DocumentReference<Room>,
+  simpleRoomPlayers: SimpleRoomPlayer[],
   deck: Deck
 ) => {
   const serializedDeck = deck.cards.map((card) => card.toFirestore());
 
-  const roomPlayersCollection = getCollectionRef<RoomPlayer>(
-    `rooms/${roomRef.id}/roomPlayers`
-  );
-  const roomPlayersRef = await roomPlayersCollection.listDocuments();
+  simpleRoomPlayers.forEach(async (smPlyr) => {
+    const [roomPlayerRef, rmPlyr] = await getDocRefAndData<RoomPlayer>(
+      `rooms/${roomRef.id}/roomPlayers/${smPlyr.playerUID}`
+    );
 
-  roomPlayersRef.forEach(async (rmPlyrRef, pos) => {
-    const roomPlayerSnapshot = await rmPlyrRef.get();
-    const roomPlayerRef = roomPlayerSnapshot.ref;
-    const roomPlayer = roomPlayerSnapshot.data() as RoomPlayer;
-
-    const startingDeckIndex = pos * 13;
+    const roomPlayer = rmPlyr as RoomPlayer;
+    const startingDeckIndex = smPlyr.position * 13;
     const endDeckIndex = startingDeckIndex + 13;
 
-    roomPlayerRef.update({
+    await roomPlayerRef.update({
       playerUID: roomPlayer.playerUID,
       playerName: roomPlayer.playerName,
       isReady: roomPlayer.isReady,
 
-      position: pos,
+      position: smPlyr.position,
       cardsOnHand: serializedDeck.slice(startingDeckIndex, endDeckIndex),
       numTricksWon: 0,
       tricksWon: [],
