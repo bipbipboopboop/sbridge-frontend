@@ -1,7 +1,7 @@
 type Props = {};
 
-const GameTable = (props: Props) => {
-  return <div>GameTable</div>;
+const Game = (props: Props) => {
+  return <div></div>;
 };
 
-export default GameTable;
+export default Game;
