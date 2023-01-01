@@ -247,7 +247,19 @@ export class Card {
   rankValue() {
     return rankValue[this.rank];
   }
+
+  toFirestore() {
+    return { suit: this.suit, rank: this.rank };
+  }
+  static fromFirestore(card: { suit: Suit; rank: Rank }) {
+    return new Card(card.suit, card.rank);
+  }
 }
+
+export type CardType = {
+  suit: Suit;
+  rank: Rank;
+};
 
 export class Deck {
   cards: Card[];

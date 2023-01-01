@@ -1,12 +1,12 @@
 import { Bid } from "../utils/bids";
-import { Card } from "../utils/cards";
+import { CardType } from "../utils/cards";
 
 // For GamePlayer sub-collection
 export type GamePlayer = {
   playerName: string;
   playerUID: string;
-  cardsOnHand: Card[];
-  tricksWon: Card[][];
+  cardsOnHand: CardType[];
+  tricksWon: CardType[][];
   numTricksWon: number;
   position: number;
 };

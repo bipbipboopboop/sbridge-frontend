@@ -26,7 +26,8 @@ const initGamePlayer = (
 ): GamePlayer => {
   const startingCardIndex = position * 13;
   const endingCardIndex = startingCardIndex + 13;
-  const cardsOnHand = deck.cards.slice(startingCardIndex, endingCardIndex);
+  const serializedDeck = deck.cards.map((card) => card.toFirestore());
+  const cardsOnHand = serializedDeck.slice(startingCardIndex, endingCardIndex);
 
   return {
     playerName: player.playerName,
