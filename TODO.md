@@ -14,10 +14,11 @@ Backend
 1) Implement toggleReady (Done)
 2) Implement startGame
 3) Implement initGame
-    - Randomly shuffle cards and distribute it to 4 players
-    - Create games
+    - Randomly shuffle cards and distribute it to 4 players(Done)
+    - Create games(Done)
 4) Implement castBid
 5) Implement declareBidWinner
 6) Implement playCard write into moves subcollection
 7) Declare winner
+8) Reintegrate gamePlayers with roomPlayers
 ```

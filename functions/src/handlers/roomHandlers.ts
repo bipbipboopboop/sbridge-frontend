@@ -1,5 +1,5 @@
 import * as functions from "firebase-functions";
-import { BiddingPhase } from "../types/GameType";
+import { BiddingPhase, GamePlayer } from "../types/GameType";
 
 import { RoomPlayer } from "../types/PlayerType";
 import { Room } from "../types/RoomType";
@@ -75,10 +75,14 @@ export const startGame = functions.https.onCall(async (_: void, context) => {
     turn: 0,
   };
 
-  await roomRef.collection("games").add(biddingPhase);
+  const gameRef = await roomRef.collection("games").add(biddingPhase);
   const gamePlayers = initGamePlayers(room, deck);
 
   gamePlayers.forEach(async (gamePlayer) => {
-    await roomRef.collection("gamePlayers").add(gamePlayer);
+    // await roomRef.collection("gamePlayers").add(gamePlayer);
+    const [gamePlayerRef] = await getDocRefAndData<GamePlayer>(
+      `rooms/${roomRef.id}/games/${gameRef.id}/gamePlayers/${gamePlayer.playerUID}`
+    );
+    await gamePlayerRef.set(gamePlayer);
   });
 });
