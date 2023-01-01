@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 
 import { Room } from "./types/RoomType";
+
 import { Player, RoomPlayer } from "./types/PlayerType";
 import { getCollectionRef, getDocRefAndData, HTTPError } from "./utils/utils";
 import {
@@ -10,7 +11,7 @@ import {
 } from "./handlers/roomHandlers";
 import { removePlayerFromReadyUIDs } from "./utils/player_utils";
 
-// // Start writing functions
+// // Start writing funcions
 // // https://firebase.google.com/docs/functions/typescript
 //
 admin.initializeApp();
@@ -18,7 +19,7 @@ admin.initializeApp();
 /**
  * Deletes a player if they are logged in.
  */
-export const deletePlayer = functions.https.onCall(async (data, context) => {
+export const deletePlayer = functions.https.onCall(async (_, context) => {
   if (!context.auth) {
     throw new functions.https.HttpsError(
       "failed-precondition",
@@ -56,7 +57,7 @@ export const addPlayer = functions.https.onCall(
     }
     const playerUID = context.auth.uid;
     const playerRef = admin.firestore().doc(`players/${playerUID}`);
-    console.log({ playerRef: JSON.stringify(playerRef) });
+    // console.log({ playerRef: JSON.stringify(playerRef) });
     await playerRef.set({ playerName, uid: playerUID, roomID: null });
     const result = {
       status: "success",
@@ -168,18 +169,31 @@ export const createRoom = functions.https.onCall(async (_, context) => {
     gameStatus: "Not Ready",
     currNumPlayers: 1,
     currReadyPlayersUID: [],
-    players: [{ playerName: player.playerName, playerUID: player.uid }],
+    players: [
+      {
+        playerName: player.playerName,
+        playerUID: player.uid,
+      },
+    ],
     playersUID: [player.uid],
+    biddingPhase: null,
+    gameState: null,
   };
   const newRoomRef = await roomsCollectionRef.add(newRoom);
 
   const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
-    `rooms/${newRoomRef.id}/players/${player.uid}`
+    `rooms/${newRoomRef.id}/roomPlayers/${player.uid}`
   );
   roomPlayerRef.set({
+    playerUID: player.uid,
     playerName: player.playerName,
-    uid: player.uid,
     isReady: false,
+
+    position: null,
+    cardsOnHand: null,
+
+    numTricksWon: 0,
+    tricksWon: null,
   });
 
   await playerRef.update({ roomID: newRoomRef.id });
@@ -237,13 +251,19 @@ export const joinRoom = functions.https.onCall(
 
     // Add this player from the roomPlayer sub-collection
     const [roomPlayerRef] = await getDocRefAndData<RoomPlayer>(
-      `rooms/${roomRef.id}/players/${player.uid}`
+      `rooms/${roomRef.id}/roomPlayers/${player.uid}`
     );
 
     await roomPlayerRef.set({
+      playerUID: player.uid,
       playerName: player.playerName,
-      uid: player.uid,
       isReady: false,
+
+      position: null,
+      cardsOnHand: null,
+
+      numTricksWon: 0,
+      tricksWon: null,
     });
 
     // Update the player

@@ -1,12 +1,17 @@
-import { GamePlayer, SimpleGamePlayer } from "../types/GameType";
-import { SimpleRoomPlayer } from "../types/PlayerType";
+import { DocumentReference } from "firebase-admin/firestore";
+import {
+  RoomPlayer,
+  SimplePlayer,
+  SimpleRoomPlayer,
+} from "../types/PlayerType";
 import { Room } from "../types/RoomType";
 import { Deck } from "./cards";
+import { getCollectionRef } from "./utils";
 
-const createSimpleGamePlayer = (
-  player: SimpleRoomPlayer,
+const createSimpleRoomPlayer = (
+  player: SimplePlayer,
   position: number
-): SimpleGamePlayer => {
+): SimpleRoomPlayer => {
   return {
     playerName: player.playerName,
     playerUID: player.playerUID,
@@ -15,15 +20,21 @@ const createSimpleGamePlayer = (
   };
 };
 
-export const initSimpleGamePlayers = (room: Room): SimpleGamePlayer[] => {
-  return room.players.map((plyr, pos) => createSimpleGamePlayer(plyr, pos));
+/**
+ *
+ * For populating room.biddingPhase
+ * @param room
+ * @returns
+ */
+export const initSimpleRoomPlayers = (room: Room): SimpleRoomPlayer[] => {
+  return room.players.map((plyr, pos) => createSimpleRoomPlayer(plyr, pos));
 };
 
-const initGamePlayer = (
+const initRoomPlayer = (
   player: SimpleRoomPlayer,
   position: number,
   deck: Deck
-): GamePlayer => {
+): RoomPlayer => {
   const startingCardIndex = position * 13;
   const endingCardIndex = startingCardIndex + 13;
   const serializedDeck = deck.cards.map((card) => card.toFirestore());
@@ -32,16 +43,56 @@ const initGamePlayer = (
   return {
     playerName: player.playerName,
     playerUID: player.playerUID,
+    isReady: true,
     cardsOnHand,
-    position: 0,
+    position,
     numTricksWon: 0,
     tricksWon: [],
   };
 };
 
-export const initGamePlayers = (room: Room, deck: Deck) => {
-  const gamePlayers = room.players.map((plyr, pos) =>
-    initGamePlayer(plyr, pos, deck)
+/**
+ * For populating roomPlayers
+ * @param room
+ * @param deck
+ * @returns
+ */
+export const initRoomPlayers = async (
+  roomRef: DocumentReference<Room>,
+  deck: Deck
+) => {
+  const roomPlayersCollection = getCollectionRef<RoomPlayer>(
+    `rooms/${roomRef.id}/roomPlayers`
   );
-  return gamePlayers;
+
+  const roomPlayersRef = await roomPlayersCollection.listDocuments();
+
+  roomPlayersRef.forEach(async (rmPlyrRef, pos) => {
+    const roomPlayerSnapshot = await rmPlyrRef.get();
+    const roomPlayerRef = roomPlayerSnapshot.ref;
+    const roomPlayer = roomPlayerSnapshot.data() as RoomPlayer;
+
+    const startingDeckIndex = pos * 13;
+    const endDeckIndex = startingDeckIndex + 13;
+
+    roomPlayerRef.update({
+      playerUID: roomPlayer.playerUID,
+      playerName: roomPlayer.playerName,
+      isReady: roomPlayer.isReady,
+
+      position: pos,
+      cardsOnHand: deck.cards
+        .slice(startingDeckIndex, endDeckIndex)
+        .map((card) => card.toFirestore()),
+      numTricksWon: 0,
+      tricksWon: [],
+    });
+  });
 };
+
+/**
+ * 0, 13
+ * 13, 26
+ * 26, 39
+ * 39, 52
+ */

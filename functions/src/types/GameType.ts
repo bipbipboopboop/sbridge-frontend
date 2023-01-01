@@ -1,42 +1,24 @@
 import { Bid } from "../utils/bids";
-import { CardType } from "./CardType";
-
-// For GamePlayer sub-collection
-export type GamePlayer = {
-  playerName: string;
-  playerUID: string;
-  cardsOnHand: CardType[];
-  tricksWon: CardType[][];
-  numTricksWon: number;
-  position: number;
-};
-
-// For GameState
-export type SimpleGamePlayer = {
-  playerName: string;
-  playerUID: string;
-  numTricksWon: number;
-  position: number;
-};
+import { SimpleRoomPlayer } from "./PlayerType";
 
 export type GameState = {
   trumpSuit: string;
   declarerTeam: {
-    teamTricksNeeded: number;
+    teamTricksNeeded: number | null;
     teamTricksWon: number;
-    members: SimpleGamePlayer[];
+    members: SimpleRoomPlayer[];
   };
   defendingTeam: {
-    teamTricksNeeded: number;
+    teamTricksNeeded: number | null;
     teamTricksWon: number;
-    members: SimpleGamePlayer[];
+    members: SimpleRoomPlayer[];
   };
   winnerTeam: string | null;
   turn: number; // An integer to determine which player's turn to play
 };
 
-export type BiddingPhase = {
+export type BiddingState = {
   currHighestBid: Bid | null;
-  players: SimpleGamePlayer[];
+  players: SimpleRoomPlayer[];
   turn: number;
 };

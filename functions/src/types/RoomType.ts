@@ -1,4 +1,5 @@
-import { SimpleRoomPlayer } from "./PlayerType";
+import { BiddingState, GameState } from "./GameType";
+import { SimplePlayer } from "./PlayerType";
 
 export type Room = {
   roomOwnerUID: string;
@@ -6,6 +7,9 @@ export type Room = {
   gameStatus: string;
   currNumPlayers: number;
   currReadyPlayersUID: string[];
-  players: SimpleRoomPlayer[];
+  players: SimplePlayer[];
   playersUID: string[];
+
+  biddingPhase: BiddingState | null;
+  gameState: GameState | null;
 };
