@@ -1,5 +1,5 @@
 import { Bid } from "../utils/bids";
-import { CardType } from "../utils/cards";
+import { CardType } from "./CardType";
 
 // For GamePlayer sub-collection
 export type GamePlayer = {
