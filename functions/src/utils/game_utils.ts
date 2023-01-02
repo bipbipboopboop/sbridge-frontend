@@ -17,6 +17,7 @@ const createSimpleRoomPlayer = (
     playerUID: player.playerUID,
     position,
     numTricksWon: 0,
+    numCardsOnHand: 13,
   };
 };
 

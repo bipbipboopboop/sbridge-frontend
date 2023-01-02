@@ -19,6 +19,7 @@ export type SimpleRoomPlayer = {
   playerUID: string;
   numTricksWon: number;
   position: number;
+  numCardsOnHand: number;
 };
 
 // For roomPlayers sub-collection

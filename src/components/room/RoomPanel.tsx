@@ -24,7 +24,7 @@ const RoomPanel = () => {
   } = useRoom(roomID);
   const { handleLeave } = useLobby();
   return (
-    <>
+    <div className="h-100 p-3">
       <div>
         <h5 className="m-0 p-0">{`Room ${roomID}`}</h5>
         {isPlayerInRoom && (
@@ -43,7 +43,7 @@ const RoomPanel = () => {
         roomPlayers={roomPlayers}
         isPlayerAnOwner={isPlayerAnOwner}
       />
-    </>
+    </div>
   );
 };
 

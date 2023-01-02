@@ -17,6 +17,7 @@ export type SimpleRoomPlayer = {
   playerUID: string;
   numTricksWon: number;
   position: number;
+  numCardsOnHand: number;
 };
 
 export type RoomPlayer = {

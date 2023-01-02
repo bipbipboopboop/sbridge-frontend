@@ -19,13 +19,14 @@ const MyCards = (props: MyCardsProps) => {
 
   return (
     <>
-      <p>You</p>
       <div
         className="d-flex flex-wrap justify-content-center"
-        style={{ maxWidth: "100%", overflowX: "scroll" }}
+        // style={{ maxWidth: "100%", overflowX: "scroll" }}
       >
         {sortedCards?.map((card, index) => (
-          <PlayingCard key={index} card={card} />
+          <div style={{ marginLeft: index === 0 ? "0" : "-2.2em" }}>
+            <PlayingCard key={index} card={card} />
+          </div>
         ))}
       </div>
     </>
