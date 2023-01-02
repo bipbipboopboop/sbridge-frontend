@@ -1,4 +1,4 @@
-import { Bid } from "../utils/bids";
+import { BidType } from "../utils/bids";
 import { SimpleRoomPlayer } from "./PlayerType";
 
 export type GameState = {
@@ -18,7 +18,8 @@ export type GameState = {
 };
 
 export type BiddingState = {
-  currHighestBid: Bid | null;
-  players: SimpleRoomPlayer[];
   turn: number;
+  players: SimpleRoomPlayer[];
+  currHighestBid: BidType | null;
+  numConsecutivePasses: number;
 };

@@ -9,6 +9,8 @@ import {
   toggleReady as toggleReadyFn,
   startGame as startGameFn,
 } from "./handlers/roomHandlers";
+import { castBid as castBidFn } from "./handlers/gameHandlers";
+
 import { removePlayerFromReadyUIDs } from "./utils/player_utils";
 
 // // Start writing funcions
@@ -273,3 +275,4 @@ export const joinRoom = functions.https.onCall(
 
 export const toggleReady = toggleReadyFn;
 export const startGame = startGameFn;
+export const castBid = castBidFn;

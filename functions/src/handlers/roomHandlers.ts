@@ -86,16 +86,9 @@ export const startGame = functions.https.onCall(async (_: void, context) => {
     currHighestBid: null,
     players: simpleRoomPlayers,
     turn: 0,
+    numConsecutivePasses: 0,
   };
   await roomRef.update({ biddingPhase });
 
   await initRoomPlayers(roomRef, simpleRoomPlayers, deck);
-
-  // gamePlayers.forEach(async (gamePlayer) => {
-  //   // await roomRef.collection("gamePlayers").add(gamePlayer);
-  //   const [gamePlayerRef] = await getDocRefAndData<RoomPlayer>(
-  //     `rooms/${roomRef.id}/games/${gameRef.id}/gamePlayers/${gamePlayer.playerUID}`
-  //   );
-  //   await gamePlayerRef.set(gamePlayer);
-  // });
 });
