@@ -13,7 +13,7 @@ const Room = () => {
 
   return (
     <div className="w-100 h-100 d-flex">
-      <div className="h-100 p-3" style={{ width: "70%" }}>
+      <div className="h-100" style={{ width: "70%" }}>
         {room && room.gameStatus === "Not Ready" ? <RoomPanel /> : <Game />}
       </div>
       <div className="h-100" style={{ width: "30%" }}>

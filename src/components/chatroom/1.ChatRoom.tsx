@@ -29,7 +29,7 @@ const ChatRoom = (props: ChatRoomProps) => {
   return (
     <div className="w-100 h-100 d-flex flex-column">
       <Background>
-        <>{console.log({ messages })}</>
+        {/* <>{console.log({ messages })}</> */}
         {messages?.reverse().map((msg, index) => (
           <ChatMessage key={index} message={msg} />
         ))}
@@ -45,12 +45,12 @@ export default ChatRoom;
 
 const Background = styled.div`
   height: 100vh;
-  background: rgb(129, 251, 184);
-  background: linear-gradient(
-    90deg,
-    rgba(129, 251, 184, 1) 59%,
-    rgba(40, 199, 111, 1) 100%
-  );
+  // background: rgb(129, 251, 184);
+  // background: linear-gradient(
+  //   90deg,
+  //   rgba(129, 251, 184, 1) 59%,
+  //   rgba(40, 199, 111, 1) 100%
+  // );
   padding: 0.5em;
   overflow-y: scroll;
   display: flex;
