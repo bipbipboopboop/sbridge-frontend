@@ -1,3 +1,4 @@
+import { Button } from "react-bootstrap";
 import styled from "styled-components";
 import useGame from "../../hooks/useGame";
 import { Card as CardClass } from "../../utils/cards";
@@ -7,8 +8,13 @@ const TricksPanel = () => {
   // const {} = useGame();
   return (
     <div
-      className="d-flex p-3 justify-content-center"
-      style={{ width: "50vh", height: "50vh" }}
+      className="d-flex p-3 justify-content-center align-items-center"
+      style={{
+        width: "70vh",
+        height: "50vh",
+        backgroundColor: "white",
+        borderRadius: "0.5em",
+      }}
     >
       {/* {isMyTurn && (
         <p className="d-flex justify-content-center">{`Your turn to bid!`}</p>
@@ -21,11 +27,15 @@ const TricksPanel = () => {
         <div />
         <PlayingCard card={new CardClass("♠", "A")} />
         <div />
-        <PlayingCard card={new CardClass("♠", "A")} orientation={"left"} />
+
+        <PlayingCard card={new CardClass("♠", "K")} orientation={"left"} />
         <div />
-        <PlayingCard card={new CardClass("♠", "A")} orientation={"right"} />
-        <div />
-        <PlayingCard card={new CardClass("♠", "A")} />
+        <PlayingCard card={new CardClass("♠", "Q")} orientation={"right"} />
+
+        <div className="d-flex align-items-center">
+          <Button>Play</Button>
+        </div>
+        <PlayingCard card={new CardClass("♠", "J")} />
         <div />
       </PlayingTable>
     </div>
