@@ -19,7 +19,7 @@ const useRoom = (roomID: string | undefined) => {
   // Getting room
 
   // Getting roomPlayers
-  const roomPlayersRef = collection(firestore, `rooms/${roomID}/players`);
+  const roomPlayersRef = collection(firestore, `rooms/${roomID}/roomPlayers`);
   const roomPlayersQuery = query(roomPlayersRef);
 
   const [rmPlyrs, isLoadingRoomPlayers] = useCollectionData(roomPlayersQuery);

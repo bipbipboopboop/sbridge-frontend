@@ -7,6 +7,9 @@
 //   playersUID: string[];
 // };
 
+import { BiddingState, GameState } from "./GameType";
+import { SimplePlayer } from "./PlayerType";
+
 export type Room = {
   roomID: string;
   roomOwnerUID: string;
@@ -14,6 +17,9 @@ export type Room = {
   gameStatus: string;
   currNumPlayers: number;
   currReadyPlayersUID: string[];
-  players: { playerName: string; playerUID: string }[];
+  players: SimplePlayer[];
   playersUID: string[];
+
+  biddingPhase: BiddingState | null;
+  gameState: GameState | null;
 };
