@@ -13,6 +13,9 @@ const PlayingCard = (props: CardProps) => {
       className="p-2 mx-1"
       style={{
         width: "6em",
+        height: "8em",
+        minWidth: "6em",
+        minHeight: "8em",
         color: isRedSuit ? "#ff525d" : "black",
         borderColor: isRedSuit ? "#ff525d" : "black",
         border: "0.2em solid",

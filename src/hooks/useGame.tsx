@@ -45,9 +45,24 @@ const useGame = () => {
       (plyr) => plyr.position === ((me.position as number) + 3) % 4
     );
 
-  console.log({ leftPlayer, topPlayer, rightPlayer });
+  const currTurn = room?.biddingPhase?.turn;
+  const playerToBid = room?.biddingPhase?.players.find(
+    (plyr) => plyr.position === currTurn
+  );
+  const isMyTurn = playerToBid?.playerUID === playerData?.uid;
+  const highestBid = room?.biddingPhase?.currHighestBid;
 
-  return { me, room, leftPlayer, topPlayer, rightPlayer };
+  return {
+    me,
+    room,
+    leftPlayer,
+    topPlayer,
+    rightPlayer,
+    currTurn,
+    playerToBid,
+    isMyTurn,
+    highestBid,
+  };
 };
 
 export default useGame;

@@ -63,6 +63,8 @@ const TextInput = styled.input`
 `;
 
 const SendButton = styled.button`
-  width: 10%;
-  background-color: rgb(56, 56, 143);
+  width: 20%;
+  border: 0px;
+  // background: rgb(58, 58, 58);
+  background-color: #33ab5f;
 `;

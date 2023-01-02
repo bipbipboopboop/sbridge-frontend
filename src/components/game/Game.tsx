@@ -1,29 +1,55 @@
+import { Card } from "react-bootstrap";
 import useGame from "../../hooks/useGame";
+import BiddingPanel from "./BiddingPanel";
 
 import MyCards from "./MyCards";
 
 const Game = () => {
-  const { me, room, leftPlayer, topPlayer, rightPlayer } = useGame();
-  console.log({ players: room?.biddingPhase?.players });
+  const { me, leftPlayer, topPlayer, rightPlayer } = useGame();
+
   return (
     <div className="h-100 d-flex flex-column-reverse justify-content-between">
-      <div>
-        <pre>
-          {JSON.stringify({ position: me?.position, name: me?.playerName })}
-        </pre>
-        <div className="d-flex">{me && <MyCards roomPlayer={me} />}</div>
-      </div>
+      <div>{me && <MyCards me={me} />}</div>
       <div className="d-flex justify-content-between">
         <div>
           <p>{leftPlayer?.playerName}</p>
+          <Card
+            style={{
+              width: "6em",
+              height: "8em",
+              minWidth: "6em",
+              minHeight: "8em",
+            }}
+          />
+        </div>
+        <div>
+          <BiddingPanel />
         </div>
         <div>
           <p>{rightPlayer?.playerName}</p>
+          <Card
+            style={{
+              width: "6em",
+              height: "8em",
+              minWidth: "6em",
+              minHeight: "8em",
+            }}
+          />
         </div>
       </div>
       <div className="d-flex justify-content-center">
-        <div>
-          <p>{topPlayer?.playerName}</p>
+        <div className="d-flex">
+          <div>
+            <p>{topPlayer?.playerName}</p>
+          </div>
+          <Card
+            style={{
+              width: "6em",
+              height: "8em",
+              minWidth: "6em",
+              minHeight: "8em",
+            }}
+          />
         </div>
       </div>
     </div>
