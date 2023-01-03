@@ -1,8 +1,8 @@
 import { Button } from "react-bootstrap";
 import styled from "styled-components";
-import useGame from "../../hooks/useGame";
-import { Card as CardClass } from "../../utils/cards";
-import PlayingCard from "../PlayingCard";
+
+import { Card as CardClass } from "../../../utils/cards";
+import PlayingCard from "../../PlayingCard";
 
 const TricksPanel = () => {
   // const {} = useGame();

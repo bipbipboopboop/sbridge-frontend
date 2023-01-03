@@ -1,12 +1,3 @@
-// export type RoomType = {
-//   roomID: string;
-//   currNumPlayers: number;
-//   roomOwnerUID: string;
-//   roomOwnerName: string;
-//   gameStatus: string;
-//   playersUID: string[];
-// };
-
 import { BiddingState, GameState } from "./GameType";
 import { SimplePlayer } from "./PlayerType";
 
@@ -23,3 +14,13 @@ export type Room = {
   biddingPhase: BiddingState | null;
   gameState: GameState | null;
 };
+
+// OLD
+// export type RoomType = {
+//   roomID: string;
+//   currNumPlayers: number;
+//   roomOwnerUID: string;
+//   roomOwnerName: string;
+//   gameStatus: string;
+//   playersUID: string[];
+// };

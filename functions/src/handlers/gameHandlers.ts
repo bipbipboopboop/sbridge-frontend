@@ -1,5 +1,4 @@
 import * as functions from "firebase-functions";
-import { Suit } from "../types/CardType";
 import { BiddingState } from "../types/GameType";
 import { Bid, BidType } from "../utils/bids";
 import { checkPlayerAccessPrivilege } from "../utils/player_utils";
@@ -31,10 +30,10 @@ export const castBid = functions.https.onCall(async (bid: BidType, context) => {
   const isBidValid = Bid.isBid(bid);
   if (!isBidValid) throw HTTPError("failed-precondition", "Bid is not valid!");
 
-  const checkedBid = new Bid(bid.suit, bid.value, bid.isPass);
+  const checkedBid = new Bid(bid);
 
   // If the incoming bid is a pass. Update the players turn and numConsecutivePasses then return immediately
-  if (checkedBid.isPass) {
+  if (checkedBid.isPass()) {
     const updatedBiddingPhase: BiddingState = {
       players: biddingPhase.players,
       turn: (biddingPhase.turn + 1) % 4,
@@ -47,13 +46,7 @@ export const castBid = functions.https.onCall(async (bid: BidType, context) => {
   }
 
   // Check if bid is larger than currHighestBid
-  const currHighestBid =
-    biddingPhase.currHighestBid &&
-    new Bid(
-      biddingPhase.currHighestBid?.suit as Suit,
-      biddingPhase.currHighestBid?.value as number,
-      biddingPhase.currHighestBid?.isPass as boolean
-    );
+  const currHighestBid = new Bid(biddingPhase.currHighestBid);
 
   const isOutBiddable = checkedBid.canOutbid(currHighestBid);
   if (!isOutBiddable)

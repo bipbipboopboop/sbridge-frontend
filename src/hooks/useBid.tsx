@@ -1,10 +1,12 @@
-import { doc, DocumentReference } from "firebase/firestore";
 import { useState } from "react";
+
+import { doc, DocumentReference } from "firebase/firestore";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 import { useHttpsCallable } from "react-firebase-hooks/functions";
+
 import { RoomPlayer } from "../types/PlayerType";
 import { Room } from "../types/RoomType";
-import { BidType, Suit } from "../utils/bids";
+import { Bid, BidType, BidValue, Suit } from "../utils/bids";
 
 import { firestore, functions } from "../utils/firebase";
 import usePlayer from "./usePlayer";
@@ -55,27 +57,37 @@ const useBid = () => {
   const isMyTurn = playerToBid?.playerUID === playerData?.uid;
   const highestBid = room?.biddingPhase?.currHighestBid;
 
-  const [selectedBidValue, setSelectedBidValue] = useState<number | null>(null);
-  const [selectedSuitValue, setSelectedSuitValue] = useState<string | null>(
+  const [selectedBidValue, setSelectedBidValue] = useState<BidValue | null>(
     null
   );
+  const [selectedSuitValue, setSelectedSuitValue] = useState<Suit | null>(null);
+
+  const handleSelectBid =
+    (bidValue: BidValue) => (e: React.MouseEvent<HTMLElement>) => {
+      e.preventDefault();
+      setSelectedSuitValue(null);
+      setSelectedBidValue(bidValue);
+    };
+
+  const handleSelectSuit =
+    (suit: Suit) => (e: React.MouseEvent<HTMLElement>) => {
+      e.preventDefault();
+      setSelectedSuitValue(suit);
+    };
+
   const [castBid] = useHttpsCallable<BidType, void>(functions, "castBid");
   const handleBid = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     await castBid({
-      suit: selectedSuitValue as Suit,
-      value: selectedBidValue as number,
-      isPass: false,
+      suit: selectedSuitValue,
+      value: selectedBidValue,
     });
   };
 
   const handlePass = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    await castBid({
-      suit: "NT",
-      value: 1, // TODO: Remove this potato test
-      isPass: true,
-    });
+    const passBid = new Bid(null);
+    await castBid(passBid.toBidType());
   };
 
   return {
@@ -94,8 +106,8 @@ const useBid = () => {
     handleBid,
     handlePass,
 
-    setSelectedBidValue, // TODO: Refactor this crap
-    setSelectedSuitValue,
+    handleSelectBid,
+    handleSelectSuit,
   };
 };
 

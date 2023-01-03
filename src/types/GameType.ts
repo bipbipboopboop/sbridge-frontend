@@ -1,3 +1,4 @@
+import { BidType } from "../utils/bids";
 import { SimpleRoomPlayer } from "./PlayerType";
 
 export type GameState = {
@@ -20,19 +21,5 @@ export type BiddingState = {
   currHighestBid: BidType | null;
   players: SimpleRoomPlayer[];
   turn: number;
-};
-
-const suitValue = {
-  "♣": 1,
-  "♦": 2,
-  "♥": 3,
-  "♠": 4,
-  NT: 5,
-} as const;
-type Suit = keyof typeof suitValue;
-
-type BidType = {
-  suit: Suit;
-  value: number;
-  isPass: boolean;
+  numConsecutivePasses: number;
 };

@@ -2,11 +2,11 @@ import styled from "styled-components";
 
 import useGame from "../../hooks/useGame";
 
-import BiddingPanel from "./BiddingPanel";
+import BiddingPanel from "./bidding/BiddingPanel";
 
-import MyCards from "./MyCards";
-import OtherPlayer from "./OtherPlayer";
-import TricksPanel from "./TricksPanel";
+import MyCards from "./3.MyCards";
+import OtherPlayer from "./2.OtherPlayer";
+import TricksPanel from "./tricks/TricksPanel";
 
 const Game = () => {
   const { room, me, leftPlayer, topPlayer, rightPlayer } = useGame();
