@@ -11,7 +11,10 @@ const BiddingPanel = () => {
 
     selectedBidValue,
     selectedSuitValue,
+
     handleBid,
+    handlePass,
+
     setSelectedBidValue,
     setSelectedSuitValue,
   } = useBid();
@@ -32,7 +35,9 @@ const BiddingPanel = () => {
       {isMyTurn && (
         <Card.Body>
           <div className="d-flex my-1">
-            <Button className="mx-1">Pass</Button>
+            <Button className="mx-1" onClick={handlePass}>
+              Pass
+            </Button>
             {selectedBidValue && selectedSuitValue && (
               <Button onClick={handleBid}>Bid</Button>
             )}
@@ -44,7 +49,7 @@ const BiddingPanel = () => {
               const highestBidInstance =
                 highestBid && new Bid(highestBid.suit, highestBid.value, false);
               const clickable = highestBidInstance
-                ? !thisBid.canOutbid(highestBidInstance)
+                ? thisBid.canOutbid(highestBidInstance)
                 : true;
               return (
                 <Button
@@ -69,7 +74,7 @@ const BiddingPanel = () => {
                   highestBid &&
                   new Bid(highestBid.suit, highestBid.value, false);
                 const clickable = highestBidInstance
-                  ? !thisBid.canOutbid(highestBidInstance)
+                  ? thisBid.canOutbid(highestBidInstance)
                   : true;
                 return (
                   <Button

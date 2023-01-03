@@ -46,15 +46,14 @@ export const castBid = functions.https.onCall(async (bid: BidType, context) => {
     return;
   }
 
-  // If the currHighestBid is null, it means it's the start of the game. Any bid should pass through
-
-  // Else,
   // Check if bid is larger than currHighestBid
-  const currHighestBid = new Bid(
-    biddingPhase.currHighestBid?.suit as Suit,
-    biddingPhase.currHighestBid?.value as number,
-    biddingPhase.currHighestBid?.isPass as boolean
-  );
+  const currHighestBid =
+    biddingPhase.currHighestBid &&
+    new Bid(
+      biddingPhase.currHighestBid?.suit as Suit,
+      biddingPhase.currHighestBid?.value as number,
+      biddingPhase.currHighestBid?.isPass as boolean
+    );
 
   const isOutBiddable = checkedBid.canOutbid(currHighestBid);
   if (!isOutBiddable)

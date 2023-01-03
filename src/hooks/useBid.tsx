@@ -69,6 +69,15 @@ const useBid = () => {
     });
   };
 
+  const handlePass = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    await castBid({
+      suit: "NT",
+      value: 1, // TODO: Remove this potato test
+      isPass: true,
+    });
+  };
+
   return {
     me,
     room,
@@ -83,6 +92,7 @@ const useBid = () => {
     selectedBidValue,
     selectedSuitValue,
     handleBid,
+    handlePass,
 
     setSelectedBidValue, // TODO: Refactor this crap
     setSelectedSuitValue,
