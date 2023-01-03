@@ -6,14 +6,17 @@ type ReadyButtonProps = {
   handleToggleReady: (e: React.MouseEvent<HTMLElement>) => void;
 };
 
+/**
+ * Button for toggling `isPlayerReady` in `WaitingArea.tsx`
+ *
+ * @component
+ */
 const ReadyButton = (props: ReadyButtonProps) => {
   const { isPlayerReady, handleToggleReady } = props;
   return (
     <Button onClick={handleToggleReady}>
       {isPlayerReady ? "Cancel" : "I'm Ready!"}
     </Button>
-    // <button className="btn btn-primary" onClick={handleToggleReady}>
-    // </button>
   );
 };
 

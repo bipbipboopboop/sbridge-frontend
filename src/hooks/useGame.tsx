@@ -53,14 +53,17 @@ const useGame = () => {
   const highestBid = room?.biddingPhase?.currHighestBid;
 
   return {
-    me,
     room,
-    leftPlayer,
+
     topPlayer,
+    leftPlayer,
     rightPlayer,
+    me,
+
     currTurn,
-    playerToBid,
     isMyTurn,
+
+    playerToBid,
     highestBid,
   };
 };

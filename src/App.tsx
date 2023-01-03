@@ -4,7 +4,7 @@ import { auth } from "./utils/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 import Login from "./pages/Login";
-import TopNavbar from "./components/navbar/1.Navbar";
+import Navbar from "./components/navbar/1.Navbar";
 import Lobby from "./pages/Lobby";
 import { Routes, Route } from "react-router-dom";
 import { User } from "firebase/auth";
@@ -17,7 +17,7 @@ function App() {
   return (
     <div className="App">
       <div className="w-100" style={{ height: "7vh" }}>
-        <TopNavbar />
+        <Navbar />
       </div>
       <div className="w-100" style={{ height: "93vh" }}>
         <Routes>

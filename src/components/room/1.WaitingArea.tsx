@@ -5,10 +5,10 @@ import { useParams } from "react-router-dom";
 import useLobby from "../../hooks/useLobby";
 import useRoom from "../../hooks/useRoom";
 
-import RoomButtons from "./RoomButtons";
-import RoomPlayersList from "./RoomPlayersList";
+import RoomButtons from "./2.RoomButtons";
+import RoomPlayersList from "./3.RoomPlayersList";
 
-const RoomPanel = () => {
+const WaitingArea = () => {
   const { roomID } = useParams();
   const {
     room,
@@ -47,4 +47,4 @@ const RoomPanel = () => {
   );
 };
 
-export default RoomPanel;
+export default WaitingArea;

@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import ReadyButton from "./ReadyButton";
+import ReadyButton from "../buttons/ReadyButton";
 
 type RoomButtonsProps = {
   isPlayerReady: boolean;
