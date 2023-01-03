@@ -1,9 +1,12 @@
 import { doc, DocumentReference } from "firebase/firestore";
+import { useState } from "react";
 import { useDocumentData } from "react-firebase-hooks/firestore";
+import { useHttpsCallable } from "react-firebase-hooks/functions";
 import { RoomPlayer } from "../types/PlayerType";
 import { Room } from "../types/RoomType";
+import { BidType, Suit } from "../utils/bids";
 
-import { firestore } from "../utils/firebase";
+import { firestore, functions } from "../utils/firebase";
 import usePlayer from "./usePlayer";
 
 const useBid = () => {
@@ -52,6 +55,20 @@ const useBid = () => {
   const isMyTurn = playerToBid?.playerUID === playerData?.uid;
   const highestBid = room?.biddingPhase?.currHighestBid;
 
+  const [selectedBidValue, setSelectedBidValue] = useState<number | null>(null);
+  const [selectedSuitValue, setSelectedSuitValue] = useState<string | null>(
+    null
+  );
+  const [castBid] = useHttpsCallable<BidType, void>(functions, "castBid");
+  const handleBid = async (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    await castBid({
+      suit: selectedSuitValue as Suit,
+      value: selectedBidValue as number,
+      isPass: false,
+    });
+  };
+
   return {
     me,
     room,
@@ -62,6 +79,13 @@ const useBid = () => {
     playerToBid,
     isMyTurn,
     highestBid,
+
+    selectedBidValue,
+    selectedSuitValue,
+    handleBid,
+
+    setSelectedBidValue, // TODO: Refactor this crap
+    setSelectedSuitValue,
   };
 };
 

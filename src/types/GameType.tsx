@@ -17,7 +17,7 @@ export type GameState = {
 };
 
 export type BiddingState = {
-  currHighestBid: BiddingType | null;
+  currHighestBid: BidType | null;
   players: SimpleRoomPlayer[];
   turn: number;
 };
@@ -31,7 +31,8 @@ const suitValue = {
 } as const;
 type Suit = keyof typeof suitValue;
 
-type BiddingType = {
+type BidType = {
   suit: Suit;
   value: number;
+  isPass: boolean;
 };
