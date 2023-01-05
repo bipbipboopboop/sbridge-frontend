@@ -147,12 +147,7 @@ export const selectTeammate = functions.https.onCall(
       );
 
     const isPlayerBidWinner = room.biddingPhase?.turn === roomPlayer?.position;
-    // console.log({
-    //   isPlayerBidWinner,
-    //   turn: room.biddingPhase?.turn,
-    //   roomID: roomRef.id,
-    //   roomPlayer,
-    // });
+
     if (!isPlayerBidWinner)
       throw HTTPError(
         "failed-precondition",
@@ -171,8 +166,6 @@ export const selectTeammate = functions.https.onCall(
       throw HTTPError("failed-precondition", "You cannot pick your own card!");
 
     const teammate = await getTeammate(room, roomRef, card);
-
-    console.log({ teammate });
 
     const declarerTeamMembers = room.biddingPhase?.players.filter((plyr) =>
       [player.uid, teammate?.playerUID].includes(plyr.playerUID)
@@ -203,12 +196,10 @@ export const selectTeammate = functions.https.onCall(
       turn: ((roomPlayer?.position as number) + 1) % 4, // The person next to Bid Winner should start the game.
     };
     const updatedRoom = produce(room, (room) => {
-      room.biddingPhase = null;
+      // room.biddingPhase = null;
       room.gameState = gameState;
       room.gameStatus = "Taking Tricks";
     });
-
-    // console.log({ updatedRoom: JSON.stringify(updatedRoom) });
 
     roomRef.update(updatedRoom);
   }
@@ -227,7 +218,6 @@ const getTeammate = async (
       )
     )[1];
 
-    // console.log({ roomPlayerInGetTeammate: roomPlayer, uid });
     const isPlayerOwnerOfCard =
       (roomPlayer?.cardsOnHand?.filter(
         (handCard) => handCard.rank === card.rank && handCard.suit === card.suit

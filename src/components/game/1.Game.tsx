@@ -22,8 +22,8 @@ const Game = () => {
               <OtherPlayer otherPlayer={leftPlayer} />
               <div>
                 {room.gameStatus === "Bidding" && <BiddingPanel />}
-                {room.gameStatus === "Taking Tricks" && <TricksPanel />}
                 {room.gameStatus === "Choosing Teammate" && <TeammatePanel />}
+                {room.gameStatus === "Taking Tricks" && <TricksPanel />}
               </div>
               <OtherPlayer otherPlayer={rightPlayer} />
             </div>

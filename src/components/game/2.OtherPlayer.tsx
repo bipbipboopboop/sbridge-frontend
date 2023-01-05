@@ -7,6 +7,7 @@ type OtherPlayerProps = {
 
 const OtherPlayer = (props: OtherPlayerProps) => {
   const { otherPlayer } = props;
+
   return (
     <div>
       <p>{otherPlayer?.playerName}</p>

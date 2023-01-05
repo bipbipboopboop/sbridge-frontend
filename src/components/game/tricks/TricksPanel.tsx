@@ -1,5 +1,4 @@
-import { Button } from "react-bootstrap";
-import styled from "styled-components";
+import { Button, Card as BootstrapCard } from "react-bootstrap";
 
 import { Card as CardClass } from "../../../utils/cards";
 import PlayingCard from "../../PlayingCard";
@@ -7,47 +6,32 @@ import PlayingCard from "../../PlayingCard";
 const TricksPanel = () => {
   // const {} = useGame();
   return (
-    <div
-      className="d-flex p-3 justify-content-center align-items-center"
-      style={{
-        width: "70vh",
-        height: "50vh",
-        backgroundColor: "white",
-        borderRadius: "0.5em",
-      }}
-    >
-      {/* {isMyTurn && (
-        <p className="d-flex justify-content-center">{`Your turn to bid!`}</p>
-      )}
-      {!isMyTurn && (
-        <p className="d-flex justify-content-center">{`Waiting for Player ${playerToBid?.playerName} to bid`}</p>
-      )} */}
+    <BootstrapCard className="p-3" style={{ width: "30em", height: "25em" }}>
+      <p>Player aa's turn to play!</p>
 
-      <PlayingTable>
-        <div />
-        <PlayingCard card={new CardClass("♠", "A")} />
-        <div />
-
-        <PlayingCard card={new CardClass("♠", "K")} orientation={"left"} />
-        <div />
-        <PlayingCard card={new CardClass("♠", "Q")} orientation={"right"} />
-
-        <div className="d-flex align-items-center">
-          <Button>Play</Button>
+      <BootstrapCard.Body className="h-50">
+        <div
+          className="d-flex justify-content-center"
+          style={{ height: "5em" }}
+        >
+          <PlayingCard card={new CardClass("♠", "A")} />
         </div>
-        <PlayingCard card={new CardClass("♠", "J")} />
-        <div />
-      </PlayingTable>
-    </div>
+        <div
+          className="d-flex justify-content-around"
+          style={{ height: "5em" }}
+        >
+          <PlayingCard card={new CardClass("♠", "K")} orientation={"left"} />
+          <PlayingCard card={new CardClass("♠", "Q")} orientation={"right"} />
+        </div>
+        <div
+          className="d-flex justify-content-center"
+          style={{ height: "5em" }}
+        >
+          <PlayingCard card={new CardClass("♠", "J")} />
+        </div>
+      </BootstrapCard.Body>
+    </BootstrapCard>
   );
 };
 
 export default TricksPanel;
-
-const PlayingTable = styled.div`
-  display: grid; 
-  grid-template-columns: 1fr 1fr 1fr; 
-  grid-template-rows: 1fr 1fr 1fr; 
-  gap: 0px 0px;
-}
-`;

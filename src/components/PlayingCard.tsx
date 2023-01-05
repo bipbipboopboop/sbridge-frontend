@@ -35,7 +35,8 @@ const Card = (props: CardProps & { rotateBy: number }) => {
         minHeight: "8em",
         color: isRedSuit ? "#ff525d" : "black",
         borderColor: isRedSuit ? "#ff525d" : "black",
-        border: "0.2em solid",
+        borderWidth: "0.2em",
+        border: "solid",
         transform: `rotate(${rotateBy}deg)`,
         // marginLeft: "-2.5em",
       }}
