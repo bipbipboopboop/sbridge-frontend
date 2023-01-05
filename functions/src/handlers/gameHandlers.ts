@@ -189,14 +189,16 @@ export const selectTeammate = functions.https.onCall(
     };
 
     const gameState: GameState = {
+      turn: ((roomPlayer?.position as number) + 1) % 4, // The person next to Bid Winner should start the game.
+      startingPosition: ((roomPlayer?.position as number) + 1) % 4,
       trumpSuit: room.biddingPhase?.currHighestBid?.suit as Suit,
-      winnerTeam: null,
       declarerTeam,
       defendingTeam,
-      turn: ((roomPlayer?.position as number) + 1) % 4, // The person next to Bid Winner should start the game.
+      winnerTeam: null,
+      tableCards: [null, null, null, null],
     };
     const updatedRoom = produce(room, (room) => {
-      // room.biddingPhase = null;
+      // room.biddingPhase = null; // TODO: Check frontend to see if we should make this null
       room.gameState = gameState;
       room.gameStatus = "Taking Tricks";
     });

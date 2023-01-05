@@ -6,9 +6,10 @@ import { auth, firestore, functions } from "../utils/firebase";
 import { useDeleteUser } from "react-firebase-hooks/auth";
 import { useDocumentData } from "react-firebase-hooks/firestore";
 
-import { Player } from "../types/PlayerType";
+import { Player, RoomPlayer } from "../types/PlayerType";
 import { useHttpsCallable } from "react-firebase-hooks/functions";
 import { useNavigate } from "react-router-dom";
+import { Room } from "../types/RoomType";
 
 const usePlayer = () => {
   const currPlayerUID = getUID();
@@ -41,9 +42,36 @@ const usePlayer = () => {
   };
 
   const isPlayerInAnyRoom = playerData?.roomID ? true : false;
-  // console.log({ playerData, isLoadingPlayer, isPlayerInAnyRoom });
+
   // TODO : CHECK WHY KEEP RERENDERING
-  return { playerData, isLoadingPlayer, isPlayerInAnyRoom, logOut };
+
+  /**
+   * For Game(Bid & Choose Teammate & Trick)
+   */
+  const roomPlayerRef =
+    playerData &&
+    (doc(
+      firestore,
+      `rooms/${playerData?.roomID}/roomPlayers/${playerData?.uid}`
+    ) as DocumentReference<RoomPlayer>);
+
+  const roomRef =
+    playerData &&
+    (doc(firestore, `rooms/${playerData?.roomID}`) as DocumentReference<Room>);
+  const [room] = useDocumentData<Room>(roomRef);
+
+  const [me] = useDocumentData<RoomPlayer>(roomPlayerRef);
+  return {
+    playerData,
+    isLoadingPlayer,
+    isPlayerInAnyRoom,
+    logOut,
+
+    roomPlayerRef, // Player's ref after joining a room
+    roomRef, // Player's room.
+    room, // My rooms
+    me, // Player Data
+  };
 };
 
 export default usePlayer;

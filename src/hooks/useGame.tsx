@@ -1,26 +1,8 @@
-import { doc, DocumentReference } from "firebase/firestore";
-import { useDocumentData } from "react-firebase-hooks/firestore";
-import { RoomPlayer } from "../types/PlayerType";
-import { Room } from "../types/RoomType";
-
-import { firestore } from "../utils/firebase";
 import usePlayer from "./usePlayer";
 
+// TODO : Refactor this by removing some code from useBid
 const useGame = () => {
-  const { playerData } = usePlayer();
-  const roomPlayerRef =
-    playerData &&
-    (doc(
-      firestore,
-      `rooms/${playerData?.roomID}/roomPlayers/${playerData?.uid}`
-    ) as DocumentReference<RoomPlayer>);
-
-  const roomRef =
-    playerData &&
-    (doc(firestore, `rooms/${playerData?.roomID}`) as DocumentReference<Room>);
-  const [room] = useDocumentData<Room>(roomRef);
-
-  const [me] = useDocumentData<RoomPlayer>(roomPlayerRef);
+  const { playerData, room, me } = usePlayer();
 
   const players = room?.biddingPhase?.players;
   const otherPlayers = players?.filter(
