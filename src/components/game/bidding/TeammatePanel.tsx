@@ -5,12 +5,31 @@ import { SuitArray } from "../../../utils/bids";
 import PlayingCard from "../../PlayingCard";
 
 const TeammatePanel = () => {
-  const { selectableCards, handleSelectSuit, isBidWinner, bidWinner } =
-    useSelectTeammate();
+  const {
+    selectableCards,
+    isBidWinner,
+    bidWinner,
+
+    handleSelectSuit,
+    handleSelectCard,
+    handleSelectTeammate,
+
+    selectedCard,
+  } = useSelectTeammate();
 
   return (
     <BootstrapCard className="p-3" style={{ width: "70vh", height: "50vh" }}>
-      {isBidWinner && "Pick your teammate!"}
+      {isBidWinner &&
+        (selectedCard ? (
+          <div>
+            {`Currently selecting : ${selectedCard.toString()}`}
+            <Button className="mx-3" onClick={handleSelectTeammate}>
+              Confirm
+            </Button>
+          </div>
+        ) : (
+          "Pick your teammate!"
+        ))}
       {!isBidWinner && `${bidWinner?.playerName} is selecting teammate...`}
       <BootstrapCard.Body>
         {isBidWinner &&
@@ -26,13 +45,18 @@ const TeammatePanel = () => {
                 </Button>
               )
           )}
+
         <div className="d-flex flex-wrap gap-3 justify-content-center">
           {selectableCards
             .sort((cardA, cardB) => cardB.compareTo(cardA))
             .map((card, index) => (
               <div
                 key={index}
-                style={{ marginLeft: index === 0 ? "0" : "-2.2em" }}
+                style={{
+                  marginLeft: index === 0 ? "0" : "-2.2em",
+                  cursor: "pointer",
+                }}
+                onClick={handleSelectCard(card)}
               >
                 <PlayingCard card={card} />
               </div>

@@ -24,7 +24,13 @@ const MyCards = (props: MyCardsProps) => {
         // style={{ maxWidth: "100%", overflowX: "scroll" }}
       >
         {sortedCards?.map((card, index) => (
-          <div key={index} style={{ marginLeft: index === 0 ? "0" : "-2.2em" }}>
+          <div
+            key={index}
+            style={{
+              marginLeft: index === 0 ? "0" : "-2.2em",
+              cursor: "pointer",
+            }}
+          >
             <PlayingCard card={card} />
           </div>
         ))}

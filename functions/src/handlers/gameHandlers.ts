@@ -130,7 +130,7 @@ const startGame = async (
   await roomRef.update(updatedRoom);
 };
 
-export const chooseTeammate = functions.https.onCall(
+export const selectTeammate = functions.https.onCall(
   async (card: CardType, context) => {
     const { player, room, roomRef } = await checkPlayerAccessPrivilege(context);
 

@@ -9,7 +9,10 @@ import {
   toggleReady as toggleReadyFn,
   startBid as startBidFn,
 } from "./handlers/roomHandlers";
-import { castBid as castBidFn } from "./handlers/gameHandlers";
+import {
+  castBid as castBidFn,
+  selectTeammate as selectTeammateFn,
+} from "./handlers/gameHandlers";
 
 import { removePlayerFromReadyUIDs } from "./utils/player_utils";
 
@@ -276,3 +279,4 @@ export const joinRoom = functions.https.onCall(
 export const toggleReady = toggleReadyFn;
 export const startBid = startBidFn;
 export const castBid = castBidFn;
+export const selectTeammate = selectTeammateFn;
