@@ -3,7 +3,7 @@ import * as functions from "firebase-functions";
 import { DocumentReference } from "firebase-admin/firestore";
 
 import { checkPlayerAccessPrivilege } from "../utils/player_utils";
-import { getCollectionRef, getDocRefAndData, HTTPError } from "../utils/utils";
+import { getDocRefAndData, HTTPError } from "../utils/utils";
 import { Bid, BidType } from "../utils/bids";
 import { updatePastBids } from "../utils/game_utils";
 
@@ -64,7 +64,6 @@ export const castBid = functions.https.onCall(async (bid: BidType, context) => {
     // There will be 3 consecutive passes, the game begins.
     const isThreeConsecutivePass =
       biddingPhase.currHighestBid && biddingPhase.numConsecutivePasses === 2;
-    console.log({ isThreeConsecutivePass });
 
     if (isThreeConsecutivePass) {
       await startGame(roomRef, room, context);
@@ -136,7 +135,7 @@ export const selectTeammate = functions.https.onCall(
 
     const roomPlayer = (
       await getDocRefAndData<RoomPlayer>(
-        `room/${roomRef.id}/roomPlayers/${player.uid}`
+        `rooms/${roomRef.id}/roomPlayers/${player.uid}`
       )
     )[1];
 
@@ -148,6 +147,12 @@ export const selectTeammate = functions.https.onCall(
       );
 
     const isPlayerBidWinner = room.biddingPhase?.turn === roomPlayer?.position;
+    // console.log({
+    //   isPlayerBidWinner,
+    //   turn: room.biddingPhase?.turn,
+    //   roomID: roomRef.id,
+    //   roomPlayer,
+    // });
     if (!isPlayerBidWinner)
       throw HTTPError(
         "failed-precondition",
@@ -165,21 +170,16 @@ export const selectTeammate = functions.https.onCall(
     if (!isTargetValid)
       throw HTTPError("failed-precondition", "You cannot pick your own card!");
 
-    const roomPlayers = getCollectionRef<RoomPlayer>(
-      `rooms/${roomRef.id}/roomPlayers`
-    );
+    const teammate = await getTeammate(room, roomRef, card);
 
-    const teammateRoomPlayer = (
-      await roomPlayers.where(`${card}`, "in", "cardsOnHand").get()
-    ).docs.map((teammate) => teammate.data())[0];
+    console.log({ teammate });
 
     const declarerTeamMembers = room.biddingPhase?.players.filter((plyr) =>
-      [player.uid, teammateRoomPlayer.playerUID].includes(plyr.playerUID)
+      [player.uid, teammate?.playerUID].includes(plyr.playerUID)
     ) as SimpleRoomPlayer[];
 
     const defendingTeamMembers = room.biddingPhase?.players.filter(
-      (plyr) =>
-        ![player.uid, teammateRoomPlayer.playerUID].includes(plyr.playerUID)
+      (plyr) => ![player.uid, teammate?.playerUID].includes(plyr.playerUID)
     ) as SimpleRoomPlayer[];
 
     const declarerTeam: Team = {
@@ -205,8 +205,37 @@ export const selectTeammate = functions.https.onCall(
     const updatedRoom = produce(room, (room) => {
       room.biddingPhase = null;
       room.gameState = gameState;
+      room.gameStatus = "Taking Tricks";
     });
+
+    // console.log({ updatedRoom: JSON.stringify(updatedRoom) });
 
     roomRef.update(updatedRoom);
   }
 );
+
+const getTeammate = async (
+  room: Room,
+  roomRef: DocumentReference<Room>,
+  card: CardType
+) => {
+  for (const index in room.playersUID) {
+    const uid = room.playersUID[index];
+    const roomPlayer = (
+      await getDocRefAndData<RoomPlayer>(
+        `rooms/${roomRef.id}/roomPlayers/${uid}`
+      )
+    )[1];
+
+    // console.log({ roomPlayerInGetTeammate: roomPlayer, uid });
+    const isPlayerOwnerOfCard =
+      (roomPlayer?.cardsOnHand?.filter(
+        (handCard) => handCard.rank === card.rank && handCard.suit === card.suit
+      ).length as number) > 0;
+
+    if (isPlayerOwnerOfCard) {
+      return roomPlayer;
+    }
+  }
+  return null;
+};
