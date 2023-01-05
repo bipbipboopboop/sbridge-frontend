@@ -30,9 +30,9 @@ const useRoom = (roomID: string | undefined) => {
     functions,
     "toggleReady"
   );
-  const [startGame, isStartingGame] = useHttpsCallable<void, void>(
+  const [startBid, isBidStarting] = useHttpsCallable<void, void>(
     functions,
-    "startGame"
+    "startBid"
   );
 
   const { playerData } = usePlayer();
@@ -57,7 +57,7 @@ const useRoom = (roomID: string | undefined) => {
 
   const handleStartGame = async (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
-    await startGame();
+    await startBid();
   };
   return {
     room,

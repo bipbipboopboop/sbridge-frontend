@@ -1,3 +1,5 @@
+import { SimpleRoomPlayer } from "../types/PlayerType";
+
 const suitValue = {
   "♣": 1,
   "♦": 2,
@@ -76,4 +78,9 @@ export class Bid {
 export type BidType = {
   suit: Suit | null;
   value: BidValue | null;
+};
+
+export type PastBid = {
+  player: SimpleRoomPlayer;
+  bid: BidType;
 };

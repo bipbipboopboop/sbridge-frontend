@@ -6,6 +6,7 @@ Frontend
 3) Create dummy table(game)
 4) Fix chat styling(DONE, but very hackishly)
 5) Create a Layout component to standardize height to fix 4)
+6) Create past bids table in Game
 ```
 
 Backend
@@ -16,10 +17,10 @@ Backend
 3) Implement initGame
     - Randomly shuffle cards and distribute it to 4 players(Done)
     - Create games(Done)
-4) Implement castBid
+4) Implement castBid (Done)
 5) Implement declareBidWinner
 6) Implement playCard write into moves subcollection
 7) Declare winner
 8) Reintegrate gamePlayers with roomPlayers(Done)
-9) Add currCardsOnHand
+9) Add currCardsOnHand(Done)
 ```

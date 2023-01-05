@@ -7,6 +7,7 @@ import BiddingPanel from "./bidding/BiddingPanel";
 import MyCards from "./3.MyCards";
 import OtherPlayer from "./2.OtherPlayer";
 import TricksPanel from "./tricks/TricksPanel";
+import TeammatePanel from "./bidding/TeammatePanel";
 
 const Game = () => {
   const { room, me, leftPlayer, topPlayer, rightPlayer } = useGame();
@@ -22,6 +23,7 @@ const Game = () => {
               <div>
                 {room.gameStatus === "Bidding" && <BiddingPanel />}
                 {room.gameStatus === "Taking Tricks" && <TricksPanel />}
+                {room.gameStatus === "Choosing Teammate" && <TeammatePanel />}
               </div>
               <OtherPlayer otherPlayer={rightPlayer} />
             </div>

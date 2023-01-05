@@ -52,7 +52,7 @@ export const toggleReady = functions.https.onCall(async (_: void, context) => {
   await updateReadyPlayersUID(room, player, roomRef);
 });
 
-export const startGame = functions.https.onCall(async (_: void, context) => {
+export const startBid = functions.https.onCall(async (_: void, context) => {
   if (!context.auth)
     throw HTTPError("failed-precondition", "This player is not authenticated!");
 
@@ -72,7 +72,7 @@ export const startGame = functions.https.onCall(async (_: void, context) => {
     throw HTTPError("permission-denied", `Game can't be started!`);
 
   await roomRef.update({ gameStatus: "Bidding" });
-  console.log("startGame - Updated gameStatus");
+  console.log("startBid - Updated gameStatus");
 
   const deck = new Deck();
   deck.shuffle();
@@ -83,9 +83,11 @@ export const startGame = functions.https.onCall(async (_: void, context) => {
   const simpleRoomPlayers = updateSimpleRoomPlayersPosition(room);
 
   const biddingPhase: BiddingState = {
-    currHighestBid: null,
-    players: simpleRoomPlayers,
     turn: 0,
+    players: simpleRoomPlayers,
+    currHighestBid: null,
+    currHighestBidder: null,
+    pastBids: [],
     numConsecutivePasses: 0,
   };
   await roomRef.update({ biddingPhase });

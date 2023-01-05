@@ -78,5 +78,14 @@ export type BidType = {
   value: BidValue | null;
 };
 
+export type PastBid = {
+  player: {
+    playerName: string;
+    playerUID: string;
+    position: number;
+  };
+  bids: BidType[];
+};
+
 export const BidValueArray: BidValue[] = [1, 2, 3, 4, 5, 6];
 export const SuitArray: Suit[] = ["♣", "♦", "♥", "♠", "NT"];

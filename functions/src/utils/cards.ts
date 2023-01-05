@@ -13,6 +13,10 @@ export class Card {
     return rankValue[this.rank];
   }
 
+  equals(other: Card) {
+    return this.rank === other.rank && this.suit === other.suit;
+  }
+
   toFirestore() {
     return { suit: this.suit, rank: this.rank };
   }

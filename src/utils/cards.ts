@@ -1,4 +1,10 @@
-import { Suit, Rank, rankValue, suitValue } from "../types/CardType";
+import {
+  Suit,
+  Rank,
+  rankValue,
+  suitValue,
+  CARDS_ARRAY,
+} from "../types/CardType";
 export class Card {
   suit: Suit;
   rank: Rank;
@@ -19,10 +25,32 @@ export class Card {
     return suitValue[this.suit] - suitValue[other.suit];
   }
 
+  equals(other: Card) {
+    return this.rank === other.rank && this.suit === other.suit;
+  }
+
   toFirestore() {
     return { suit: this.suit, rank: this.rank };
   }
   static fromFirestore(card: { suit: Suit; rank: Rank }) {
     return new Card(card.suit, card.rank);
+  }
+}
+
+export class Deck {
+  cards: Card[];
+  constructor() {
+    this.cards = CARDS_ARRAY.map((card) => new Card(card.suit, card.rank));
+  }
+
+  shuffle() {
+    const { cards } = this;
+    let m = cards.length,
+      i;
+    while (m) {
+      i = Math.floor(Math.random() * m--);
+      [cards[m], cards[i]] = [cards[i], cards[m]];
+    }
+    return this;
   }
 }

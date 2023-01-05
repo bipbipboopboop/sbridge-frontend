@@ -1,5 +1,5 @@
-import { BidType } from "../utils/bids";
-import { SimpleRoomPlayer } from "./PlayerType";
+import { BidType, PastBid } from "../utils/bids";
+import { SimplePlayer, SimpleRoomPlayer } from "./PlayerType";
 
 export type GameState = {
   trumpSuit: string;
@@ -18,8 +18,10 @@ export type GameState = {
 };
 
 export type BiddingState = {
-  currHighestBid: BidType | null;
-  players: SimpleRoomPlayer[];
   turn: number;
+  players: SimpleRoomPlayer[];
+  currHighestBid: BidType | null;
+  currHighestBidder: SimplePlayer | null;
+  pastBids: PastBid[];
   numConsecutivePasses: number;
 };

@@ -7,7 +7,7 @@ import { Player, RoomPlayer } from "./types/PlayerType";
 import { getCollectionRef, getDocRefAndData, HTTPError } from "./utils/utils";
 import {
   toggleReady as toggleReadyFn,
-  startGame as startGameFn,
+  startBid as startBidFn,
 } from "./handlers/roomHandlers";
 import { castBid as castBidFn } from "./handlers/gameHandlers";
 
@@ -274,5 +274,5 @@ export const joinRoom = functions.https.onCall(
 );
 
 export const toggleReady = toggleReadyFn;
-export const startGame = startGameFn;
+export const startBid = startBidFn;
 export const castBid = castBidFn;

@@ -1,12 +1,16 @@
+import * as functions from "firebase-functions";
 import { DocumentReference } from "firebase-admin/firestore";
+import { BiddingState } from "../types/GameType";
 import {
   RoomPlayer,
   SimplePlayer,
   SimpleRoomPlayer,
 } from "../types/PlayerType";
 import { Room } from "../types/RoomType";
+import { Bid, PastBid } from "./bids";
 import { Deck } from "./cards";
 import { getDocRefAndData } from "./utils";
+import produce from "immer";
 
 const createSimpleRoomPlayer = (
   player: SimplePlayer,
@@ -69,8 +73,24 @@ export const initRoomPlayers = async (
 };
 
 /**
- * 0, 13
- * 13, 26
- * 26, 39
- * 39, 52
+ *
+ * Used in castBid.
+ * @param biddingPhase
+ * @param bidInstance
+ * @param context
+ * @returns The updated past bids which includes the playerInfo and their latest bid.
  */
+export const updatePastBids = (
+  biddingPhase: BiddingState,
+  bidInstance: Bid,
+  context: functions.https.CallableContext
+): PastBid[] => {
+  const pastBids = produce(biddingPhase.pastBids, (pastBids) => {
+    const playersInRoom = biddingPhase.players;
+    const thisPlayer = playersInRoom.find(
+      (plyr) => plyr.playerUID === context.auth?.uid
+    ) as SimpleRoomPlayer;
+    pastBids.push({ player: thisPlayer, bid: bidInstance.toBidType() });
+  });
+  return pastBids;
+};
