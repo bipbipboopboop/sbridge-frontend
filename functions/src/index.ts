@@ -12,6 +12,7 @@ import {
 import {
   castBid as castBidFn,
   selectTeammate as selectTeammateFn,
+  dealCard as dealCardFn,
 } from "./handlers/gameHandlers";
 
 import { removePlayerFromReadyUIDs } from "./utils/player_utils";
@@ -280,3 +281,4 @@ export const toggleReady = toggleReadyFn;
 export const startBid = startBidFn;
 export const castBid = castBidFn;
 export const selectTeammate = selectTeammateFn;
+export const dealCard = dealCardFn;

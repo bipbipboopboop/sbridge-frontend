@@ -19,32 +19,27 @@ export class Trick {
     this.trumpSuit = trumpSuit;
   }
 
-  //   private isFirstCard(card: Card) {
-  //     return (
-  //       card.suit === this.firstCard.suit && card.rank === this.firstCard.rank
-  //     );
-  //   }
-
-  //   private compareCard(cardA: Card, cardB: Card) {
-  //     if (cardA.suit === this.trumpSuit && cardB.suit !== this.trumpSuit)
-  //       return 1;
-  //     if (cardA.suit !== this.trumpSuit && cardB.suit == this.trumpSuit)
-  //       return -1;
-
-  //   }
-
   getWinnerPos() {
-    const maxTrumpCard = (this.tableCards as Card[])
-      .filter((tableCard) => tableCard.suit === this.trumpSuit)
-      .sort((cardA, cardB) => cardA.compareTo(cardB))
-      .at(-1);
+    if (this.trumpSuit === "NT") {
+      const maxRelevantCard = (this.tableCards as Card[])
+        .filter((tableCard) => tableCard.suit === this.firstCard.suit)
+        .sort((cardA, cardB) => cardA.compareTo(cardB))
+        .at(-1) as Card;
+      const maxCard = maxRelevantCard;
+      return this.tableCards.findIndex((card) => card?.equals(maxCard));
+    } else {
+      const maxTrumpCard = (this.tableCards as Card[])
+        .filter((tableCard) => tableCard.suit === this.trumpSuit)
+        .sort((cardA, cardB) => cardA.compareTo(cardB))
+        .at(-1);
 
-    const maxRelevantCard = (this.tableCards as Card[])
-      .filter((tableCard) => tableCard.suit === this.firstCard.suit)
-      .sort((cardA, cardB) => cardA.compareTo(cardB))
-      .at(-1) as Card;
+      const maxRelevantCard = (this.tableCards as Card[])
+        .filter((tableCard) => tableCard.suit === this.firstCard.suit)
+        .sort((cardA, cardB) => cardA.compareTo(cardB))
+        .at(-1) as Card;
 
-    const maxCard = maxTrumpCard || maxRelevantCard;
-    return this.tableCards.findIndex((card) => card?.equals(maxCard));
+      const maxCard = maxTrumpCard || maxRelevantCard;
+      return this.tableCards.findIndex((card) => card?.equals(maxCard));
+    }
   }
 }

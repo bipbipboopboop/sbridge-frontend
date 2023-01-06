@@ -27,9 +27,15 @@ const TricksPanel = () => {
 
   return (
     <BootstrapCard className="p-3" style={{ width: "30em", height: "25em" }}>
-      <p className="text-center p-0 m-0">{`Player ${playerToDeal?.playerName}'s turn to play!`}</p>
-      <p>{`Selecting ${selectedCard?.rank} of ${selectedCard?.suit}`}</p>
-      <p>{JSON.stringify(selectedCard)}</p>
+      {!isMyTurn && (
+        <p className="text-center p-0 m-0">{`Player ${playerToDeal?.playerName}'s turn to play!`}</p>
+      )}
+      {isMyTurn && (
+        <p className="text-center p-0 m-0">{`Your turn to play!`}</p>
+      )}
+      {isMyTurn && (
+        <p className="text-center p-0 m-0">{`Selecting ${selectedCard?.rank} of ${selectedCard?.suit}`}</p>
+      )}
 
       <BootstrapCard.Body>
         <div
