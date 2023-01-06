@@ -9,6 +9,7 @@ const useGame = () => {
     (plyr) => plyr.position !== me?.position
   );
 
+  console.log({ otherPlayers });
   const leftPlayer =
     me &&
     otherPlayers?.find(

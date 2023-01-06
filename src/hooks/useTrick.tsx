@@ -41,7 +41,7 @@ const useTrick = () => {
 
   // Mark the player's selected card before they deal it.
   const [selectedCard, setSelectedCard] = useState<CardType | null>(
-    new Card("♠", "K")
+    new Card("♠", 7)
   );
 
   const handleSelectCard =

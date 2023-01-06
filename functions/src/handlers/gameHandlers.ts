@@ -262,6 +262,7 @@ export const dealCard = functions.https.onCall(
     if (isPlayerLastToTake) {
       const updatedGameState = produce(gameState, (gameState) => {
         gameState.tableCards[playerPosition] = card;
+        gameState.players[playerPosition].numCardsOnHand--;
       });
       const updatedRoomPlayer = produce(
         roomPlayer as RoomPlayer,
@@ -284,7 +285,9 @@ export const dealCard = functions.https.onCall(
       const updatedWinnerRoomPlayer = produce(
         winnerRoomPlayer as RoomPlayer,
         (winnerRoomPlayer) => {
-          winnerRoomPlayer.tricksWon = trickWon as CardType[];
+          winnerRoomPlayer.tricksWon = winnerRoomPlayer.tricksWon?.concat([
+            trickWon as CardType[],
+          ]) as CardType[][];
         }
       );
 
@@ -307,6 +310,7 @@ export const dealCard = functions.https.onCall(
         gameState.firstTableCard = card;
         gameState.tableCards[playerPosition] = card;
         gameState.turn = (gameState.turn + 1) % 4;
+        gameState.players[playerPosition].numCardsOnHand--;
       });
       await roomRef.update({ gameState: updatedGameState });
 
@@ -329,6 +333,7 @@ export const dealCard = functions.https.onCall(
     const updatedGameState = produce(gameState, (gameState) => {
       gameState.tableCards[playerPosition] = card;
       gameState.turn = (gameState.turn + 1) % 4;
+      gameState.players[playerPosition].numCardsOnHand--;
     });
     const updatedRoomPlayer = produce(
       roomPlayer as RoomPlayer,
@@ -478,161 +483,3 @@ const removeCardFromHand = (targetCard: CardType, cardOnHand: CardType[]) => {
     (card) => !(card.rank === targetCard.rank && card.suit === targetCard.suit)
   );
 };
-
-// export const dealCard = functions.https.onCall(
-//   async (card: CardType, context) => {
-//     const { player, room, roomRef } = await checkPlayerAccessPrivilege(context);
-//     const [roomPlayerRef, roomPlayer] = await getDocRefAndData<RoomPlayer>(
-//       `rooms/${roomRef.id}/roomPlayers/${player.uid}`
-//     );
-
-//     const gameState = room?.gameState as GameState;
-
-//     // Check if the game is in Trick Taking stage
-//     const isTakingTricksState = room.gameStatus === "Taking Tricks";
-//     if (!isTakingTricksState)
-//       throw HTTPError("failed-precondition", "You cannot deal in this stage");
-
-//     // Check if it's this player's turn to deal card
-//     const playerPosition = gameState.players.find(
-//       (plyr) => plyr.playerUID === player.uid
-//     )?.position;
-
-//     const isPlayerTurn = gameState.turn === playerPosition;
-
-//     if (!isPlayerTurn)
-//       throw HTTPError("failed-precondition", "It's not your turn yet!");
-
-//     // Check if this player has dealt a card before or not
-//     const cardDealtByPlayer = gameState.tableCards.at(playerPosition);
-//     if (cardDealtByPlayer)
-//       throw HTTPError("already-exists", "You've already dealt a card before!");
-
-//     // Check if the player cheated by not playing firstCard.suit when they have cards of firstCard.suit
-//     const numCardsOnTable = gameState.tableCards.filter(
-//       (card) => card !== null
-//     ).length;
-
-//     const isFirstToPlay = numCardsOnTable === 0;
-//     const isPlayerWithholdingCard =
-//       (roomPlayer?.cardsOnHand?.filter(
-//         (card) => card.suit === gameState.firstTableCard?.suit
-//       ).length as number) > 0;
-
-//     const isDealtCardSuitEqualFirstCardSuit =
-//       card.suit === gameState.firstTableCard?.suit;
-//     const isPlayerCheatingSuit =
-//       !isDealtCardSuitEqualFirstCardSuit && isPlayerWithholdingCard;
-
-//     const isPlayerOwnerOfCard =
-//       (roomPlayer?.cardsOnHand?.filter(
-//         (cardOnHand) =>
-//           cardOnHand.suit === card.suit && cardOnHand.rank === card.rank
-//       ).length as number) > 0;
-
-//     const isValidDeal =
-//       isPlayerOwnerOfCard && (isFirstToPlay || !isPlayerCheatingSuit);
-
-//     if (!isValidDeal)
-//       throw HTTPError("permission-denied", "Your deal is not valid");
-
-//     // If reach here, player has passed all checks and can deal a card
-
-//     // If player is the last to deal.
-//     const isLastToPlay = numCardsOnTable === 3;
-//     if (isLastToPlay) {
-//       let trickWonGameState: GameState = produce(gameState, (gameState) => {
-//         // Decrease the number of card this player has
-//         gameState.players[playerPosition].numCardsOnHand--;
-//         // Deal card onto the table
-//         gameState.tableCards[playerPosition] = card;
-//       });
-//       // Determine winner
-//       const trick = new Trick(
-//         gameState.firstTableCard as CardType,
-//         gameState.tableCards,
-//         gameState.trumpSuit
-//       );
-
-//       const winnerPos = trick.getWinnerPos();
-//       const winner = trickWonGameState.players[winnerPos];
-
-//       trickWonGameState = produce(gameState, (gameState) => {
-//         const trickWonTeam = gameState.declarerTeam.members.includes(
-//           winner.playerUID
-//         )
-//           ? gameState.declarerTeam
-//           : gameState.defendingTeam;
-
-//         const isTrickWonByDeclarerTeam = trickWonTeam.teamTricksNeeded >= 7;
-
-//         if (isTrickWonByDeclarerTeam) {
-//           trickWonGameState.declarerTeam.teamTricksWon++;
-//           //TODO: Check winning condition or refactor this
-//         } else {
-//           trickWonGameState.defendingTeam.teamTricksWon++;
-//         }
-//       });
-
-//       await roomRef.update({ gameState: trickWonGameState });
-//       return;
-//     }
-
-//     const updatedRoomPlayer: RoomPlayer = produce(
-//       roomPlayer as RoomPlayer,
-//       (roomPlayer) => {
-//         roomPlayer.cardsOnHand = (roomPlayer.cardsOnHand as Card[]).filter(
-//           (handCard) =>
-//             !(handCard.rank === card.rank && handCard.suit === card.suit)
-//         ) as CardType[];
-//       }
-//     );
-//     await roomPlayerRef.update(updatedRoomPlayer);
-
-//     const updatedGameState: GameState = await produce(
-//       gameState,
-//       async (gameState) => {
-//         // Decrease the number of card this player has
-//         gameState.players[playerPosition].numCardsOnHand--;
-//         // Deal card onto the table
-//         gameState.tableCards[playerPosition] = card;
-
-//         // Check whether the player is the first or last to deal.
-//         // Check if player is the last to deal. If so, determine winner
-//         const isLastToPlay = numCardsOnTable === 3;
-//         // Immer uses the original state so tableCards hasn't been updated at this point.
-//         if (isLastToPlay) {
-//           // Determine winner
-//           const trick = new Trick(
-//             gameState.firstTableCard as CardType,
-//             gameState.tableCards,
-//             gameState.trumpSuit
-//           );
-//           const winnerPos = trick.getWinnerPos();
-//           const winner = gameState.players[winnerPos];
-//           const trickWonTeam = gameState.declarerTeam.members.includes(
-//             winner.playerUID
-//           )
-//             ? gameState.declarerTeam
-//             : gameState.defendingTeam;
-
-//           const isTrickWonByDeclarerTeam = trickWonTeam.teamTricksNeeded >= 7;
-
-//           if (isTrickWonByDeclarerTeam) {
-//             gameState.declarerTeam.teamTricksWon++;
-//           } else {
-//             gameState.defendingTeam.teamTricksWon++;
-//           }
-//           return;
-//         }
-
-//         if (isFirstToPlay) {
-//           gameState.firstTableCard = card;
-//         }
-//         gameState.turn = (gameState.turn + 1) % 4;
-//       }
-//     );
-
-//     await roomRef.update({ gameState: updatedGameState });
-//   }
-// );

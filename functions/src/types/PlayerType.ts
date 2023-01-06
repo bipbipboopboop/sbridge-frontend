@@ -25,6 +25,7 @@ export type SimpleRoomPlayer = {
 };
 
 // For roomPlayers sub-collection
+
 export type RoomPlayer = {
   playerUID: string;
   playerName: string;
@@ -34,5 +35,5 @@ export type RoomPlayer = {
   cardsOnHand: CardType[] | null;
 
   numTricksWon: number;
-  tricksWon: CardType[] | null;
+  tricksWon: CardType[][] | null;
 };
