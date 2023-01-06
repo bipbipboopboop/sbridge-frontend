@@ -36,7 +36,9 @@ const useBid = () => {
   const [selectedBidValue, setSelectedBidValue] = useState<BidValue | null>(
     null
   );
-  const [selectedSuitValue, setSelectedSuitValue] = useState<Suit | null>(null);
+  const [selectedSuitValue, setSelectedSuitValue] = useState<
+    Suit | "NT" | null
+  >(null);
 
   const handleSelectBid =
     (bidValue: BidValue) => (e: React.MouseEvent<HTMLElement>) => {
@@ -46,7 +48,7 @@ const useBid = () => {
     };
 
   const handleSelectSuit =
-    (suit: Suit) => (e: React.MouseEvent<HTMLElement>) => {
+    (suit: Suit | "NT") => (e: React.MouseEvent<HTMLElement>) => {
       e.preventDefault();
       setSelectedSuitValue(suit);
     };

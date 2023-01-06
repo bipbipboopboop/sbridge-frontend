@@ -6,7 +6,7 @@ type BiddingDeclarerProps = {
   highestBid: BidType | null | undefined;
   playerToBid: SimpleRoomPlayer | undefined;
   selectedBidValue: BidValue | null;
-  selectedSuitValue: Suit | null;
+  selectedSuitValue: Suit | "NT" | null;
 };
 const BiddingDeclarer = (props: BiddingDeclarerProps) => {
   const {

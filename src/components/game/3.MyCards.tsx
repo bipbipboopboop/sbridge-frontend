@@ -1,3 +1,4 @@
+import useTrick from "../../hooks/useTrick";
 import { RoomPlayer } from "../../types/PlayerType";
 import { Card } from "../../utils/cards";
 import PlayingCard from "../PlayingCard";
@@ -8,6 +9,7 @@ type MyCardsProps = {
 
 const MyCards = (props: MyCardsProps) => {
   const { me } = props;
+  const { handleSelectCard } = useTrick();
 
   const sortedCards =
     me &&
@@ -30,6 +32,7 @@ const MyCards = (props: MyCardsProps) => {
               marginLeft: index === 0 ? "0" : "-2.2em",
               cursor: "pointer",
             }}
+            onClick={handleSelectCard(card)}
           >
             <PlayingCard card={card} />
           </div>

@@ -15,11 +15,13 @@ export type SimplePlayer = {
 
 // For room.biddingPhase and room.gamePhase
 export type SimpleRoomPlayer = {
-  playerName: string;
   playerUID: string;
-  numTricksWon: number;
+  playerName: string;
+
   position: number;
   numCardsOnHand: number;
+
+  numTricksWon: number;
 };
 
 // For roomPlayers sub-collection

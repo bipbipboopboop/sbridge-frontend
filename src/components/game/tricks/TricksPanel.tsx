@@ -11,12 +11,25 @@ const TricksPanel = () => {
     rightPlayerTableCard: rightCard,
     bottomPlayerTableCard: bottomCard,
 
+    // For calculating z-index
+    leftOffset,
+    topOffset,
+    rightOffset,
+    bottomOffset,
+
+    // For declaring on prompt
+    playerToDeal,
+    selectedCard,
+
     isMyTurn,
     handleDeal,
   } = useTrick();
+
   return (
     <BootstrapCard className="p-3" style={{ width: "30em", height: "25em" }}>
-      <p className="text-center p-0 m-0">Player aa's turn to play!</p>
+      <p className="text-center p-0 m-0">{`Player ${playerToDeal?.playerName}'s turn to play!`}</p>
+      <p>{`Selecting ${selectedCard?.rank} of ${selectedCard?.suit}`}</p>
+      <p>{JSON.stringify(selectedCard)}</p>
 
       <BootstrapCard.Body>
         <div
@@ -24,8 +37,8 @@ const TricksPanel = () => {
           style={{ height: "5em" }}
         >
           {topCard && (
-            <div>
-              <PlayingCard card={new CardClass(topCard.suit, topCard.rank)} />
+            <div style={{ zIndex: topOffset }}>
+              <PlayingCard card={new CardClass(topCard?.suit, topCard?.rank)} />
             </div>
           )}
         </div>
@@ -34,16 +47,20 @@ const TricksPanel = () => {
           style={{ height: "5em" }}
         >
           {leftCard && (
-            <PlayingCard
-              card={new CardClass(leftCard.suit, leftCard.rank)}
-              orientation={"left"}
-            />
+            <div style={{ zIndex: leftOffset }}>
+              <PlayingCard
+                card={new CardClass(leftCard?.suit, leftCard?.rank)}
+                orientation={"left"}
+              />
+            </div>
           )}
           {rightCard && (
-            <PlayingCard
-              card={new CardClass(rightCard.suit, rightCard.rank)}
-              orientation={"right"}
-            />
+            <div style={{ zIndex: rightOffset }}>
+              <PlayingCard
+                card={new CardClass(rightCard?.suit, rightCard?.rank)}
+                orientation={"right"}
+              />
+            </div>
           )}
         </div>
         <div
@@ -51,9 +68,11 @@ const TricksPanel = () => {
           style={{ height: "5em" }}
         >
           {bottomCard && (
-            <PlayingCard
-              card={new CardClass(bottomCard.suit, bottomCard.rank)}
-            />
+            <div style={{ zIndex: bottomOffset }}>
+              <PlayingCard
+                card={new CardClass(bottomCard.suit, bottomCard.rank)}
+              />
+            </div>
           )}
         </div>
       </BootstrapCard.Body>

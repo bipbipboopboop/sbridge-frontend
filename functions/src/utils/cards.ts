@@ -17,6 +17,12 @@ export class Card {
     return this.rank === other.rank && this.suit === other.suit;
   }
 
+  compareTo(other: Card) {
+    if (this.suit === other.suit)
+      return rankValue[this.rank] - rankValue[other.rank];
+    return 0;
+  }
+
   toFirestore() {
     return { suit: this.suit, rank: this.rank };
   }
