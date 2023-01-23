@@ -15,19 +15,21 @@ import { auth } from "../utils/firebase";
  */
 import CreateRoomButton from "../components/buttons/CreateRoomButton";
 import RoomList from "../components/lobby/RoomList";
+import useRoomActions from "../hooks/useRoomActions";
 
 const Lobby = () => {
   const [user] = useAuthState(auth); // TODO: Use either useAuthState or usePlayer
   const { isPlayerInAnyRoom } = usePlayer();
+  const { rooms } = useLobby();
+
   const {
-    rooms,
     isCreatingRoom,
     isJoiningRoom,
     isLeavingRoom,
     handleCreate,
     handleJoin,
     handleLeave,
-  } = useLobby();
+  } = useRoomActions();
 
   // console.log({ rooms });
 

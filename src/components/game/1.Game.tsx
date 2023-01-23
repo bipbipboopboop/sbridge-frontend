@@ -8,15 +8,16 @@ import MyCards from "./3.MyCards";
 import OtherPlayer from "./2.OtherPlayer";
 import TricksPanel from "./tricks/TricksPanel";
 import TeammatePanel from "./bidding/TeammatePanel";
+import { TrickProvider } from "../../contexts/TrickContext";
 
 const Game = () => {
-  const { room, me, leftPlayer, topPlayer, rightPlayer } = useGame();
+  const { room, leftPlayer, topPlayer, rightPlayer } = useGame();
 
   return (
-    <>
+    <TrickProvider>
       {room && (
         <Background>
-          <div>{me && <MyCards me={me} />}</div>
+          <MyCards />
           <div>
             <div className="d-flex justify-content-between align-items-center">
               <OtherPlayer otherPlayer={leftPlayer} />
@@ -33,7 +34,7 @@ const Game = () => {
           </div>
         </Background>
       )}
-    </>
+    </TrickProvider>
   );
 };
 

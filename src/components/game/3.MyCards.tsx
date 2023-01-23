@@ -1,15 +1,21 @@
-import useTrick from "../../hooks/useTrick";
+import { useContext } from "react";
+import { TrickContext } from "../../contexts/TrickContext";
+import usePlayer from "../../hooks/usePlayer";
+
 import { RoomPlayer } from "../../types/PlayerType";
 import { Card } from "../../utils/cards";
 import PlayingCard from "../PlayingCard";
 
-type MyCardsProps = {
-  me: RoomPlayer;
-};
+// type MyCardsProps = {
+//   me: RoomPlayer;
+// };
 
-const MyCards = (props: MyCardsProps) => {
-  const { me } = props;
-  const { handleSelectCard } = useTrick();
+const MyCards = () => {
+  const { me } = usePlayer();
+  const trick = useContext(TrickContext);
+  const { handleSelectCard } = trick;
+
+  // const first = useContext(TrickContext);
 
   const sortedCards =
     me &&
@@ -33,6 +39,7 @@ const MyCards = (props: MyCardsProps) => {
               cursor: "pointer",
             }}
             onClick={handleSelectCard(card)}
+            // onMouseOver={() => console.log({ card })}
           >
             <PlayingCard card={card} />
           </div>

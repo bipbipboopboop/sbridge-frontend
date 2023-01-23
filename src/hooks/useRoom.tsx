@@ -1,64 +1,54 @@
-import { firestore, functions } from "../utils/firebase";
+import { firestore } from "../utils/firebase";
 
-import { collection, doc, query } from "firebase/firestore";
+import {
+  collection,
+  CollectionReference,
+  doc,
+  DocumentReference,
+  query,
+} from "firebase/firestore";
 import {
   useCollectionData,
   useDocumentData,
 } from "react-firebase-hooks/firestore";
 
-import { useHttpsCallable } from "react-firebase-hooks/functions";
 import { RoomPlayer } from "../types/PlayerType";
 import { Room } from "../types/RoomType";
 import usePlayer from "./usePlayer";
 
+/**
+ * Provides information of a room.
+ * @param roomID
+ *
+ */
 const useRoom = (roomID: string | undefined) => {
   // Getting room
-  const roomRef = doc(firestore, `rooms/${roomID}`);
-  const [rm, isRoomLoading] = useDocumentData(roomRef);
-  const room = rm as Room;
+  const roomRef = doc(firestore, `rooms/${roomID}`) as DocumentReference<Room>;
+  const [room, isRoomLoading] = useDocumentData<Room>(roomRef);
   // Getting room
 
   // Getting roomPlayers
-  const roomPlayersRef = collection(firestore, `rooms/${roomID}/roomPlayers`);
+  const roomPlayersRef = collection(
+    firestore,
+    `rooms/${roomID}/roomPlayers`
+  ) as CollectionReference<RoomPlayer>;
   const roomPlayersQuery = query(roomPlayersRef);
 
-  const [rmPlyrs, isLoadingRoomPlayers] = useCollectionData(roomPlayersQuery);
-  const roomPlayers = rmPlyrs as RoomPlayer[];
+  const [roomPlayers, isLoadingRoomPlayers] =
+    useCollectionData<RoomPlayer>(roomPlayersQuery);
   // Getting roomPlayers
 
-  const [toggleReady, isTogglingReady] = useHttpsCallable<void, void>(
-    functions,
-    "toggleReady"
-  );
-  const [startBid, isBidStarting] = useHttpsCallable<void, void>(
-    functions,
-    "startBid"
-  );
-
   const { playerData } = usePlayer();
-  const isPlayerReady = playerData?.uid
-    ? room?.currReadyPlayersUID.includes(playerData.uid)
-    : false;
+  const isPlayerReady =
+    room?.currReadyPlayersUID.includes(playerData?.uid as string) || false;
 
-  const isPlayerInRoom = playerData
-    ? room?.playersUID?.includes(playerData.uid)
-    : false;
+  const isPlayerInRoom =
+    room?.playersUID?.includes(playerData?.uid as string) || false;
 
-  const isPlayerAnOwner = playerData
-    ? room?.roomOwnerUID === playerData.uid
-    : false;
+  const isPlayerAnOwner = room?.roomOwnerUID === playerData?.uid;
 
   const isGameStartable = room?.currReadyPlayersUID.length === 4;
 
-  const handleToggleReady = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    await toggleReady();
-  };
-
-  const handleStartGame = async (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    await startBid();
-  };
   return {
     room,
     roomPlayers,
@@ -70,10 +60,6 @@ const useRoom = (roomID: string | undefined) => {
 
     isRoomLoading,
     isLoadingRoomPlayers,
-    isTogglingReady,
-
-    handleToggleReady,
-    handleStartGame,
   };
 };
 

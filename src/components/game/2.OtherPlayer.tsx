@@ -9,14 +9,16 @@ const OtherPlayer = (props: OtherPlayerProps) => {
   const { otherPlayer } = props;
 
   return (
-    <div>
-      <p>{otherPlayer?.playerName}</p>
+    <div className="d-flex p-2">
+      <div>
+        <p className="mt-2">{otherPlayer?.playerName}</p>
+      </div>
       <Card
         style={{
-          width: "6em",
-          height: "8em",
-          minWidth: "6em",
-          minHeight: "8em",
+          width: "12vh",
+          height: "17vh",
+          // minWidth: "12vh",
+          // minHeight: "17vh",
         }}
       >
         <Card.Body className="d-flex justify-content-center align-items-center">

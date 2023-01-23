@@ -1,4 +1,4 @@
-import { Button, Card } from "react-bootstrap";
+import { Button, Card as BootstrapCard } from "react-bootstrap";
 
 import useBid from "../../../hooks/useBid";
 
@@ -21,7 +21,7 @@ const BiddingPanel = () => {
   } = useBid();
 
   return (
-    <Card className="p-3" style={{ width: "70vh", height: "50vh" }}>
+    <BootstrapCard className="p-3" style={{ width: "30em", height: "20em" }}>
       <BiddingDeclarer
         isMyTurn={isMyTurn}
         highestBid={highestBid}
@@ -30,7 +30,7 @@ const BiddingPanel = () => {
         selectedSuitValue={selectedSuitValue}
       />
       {isMyTurn && (
-        <Card.Body>
+        <BootstrapCard.Body>
           <div className="d-flex my-1">
             <Button className="mx-1" onClick={handlePass}>
               Pass
@@ -75,9 +75,9 @@ const BiddingPanel = () => {
                 );
               })}
           </div>
-        </Card.Body>
+        </BootstrapCard.Body>
       )}
-    </Card>
+    </BootstrapCard>
   );
 };
 

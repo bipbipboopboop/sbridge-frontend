@@ -278,28 +278,29 @@ export const dealCard = functions.https.onCall(
       const {
         resetedGameState,
         winnerRoomPlayer,
-        winnerRoomPlayerRef,
+        // winnerRoomPlayerRef,
         trickWon,
       } = await processTrick(updatedGameState, roomRef.id);
 
-      const updatedWinnerRoomPlayer = produce(
-        winnerRoomPlayer as RoomPlayer,
-        (winnerRoomPlayer) => {
-          winnerRoomPlayer.tricksWon = winnerRoomPlayer.tricksWon?.concat([
-            trickWon as CardType[],
-          ]) as CardType[][];
-        }
-      );
+      // const updatedWinnerRoomPlayer = produce(
+      //   winnerRoomPlayer as RoomPlayer,
+      //   (winnerRoomPlayer) => {
+      //     winnerRoomPlayer.tricksWon = winnerRoomPlayer.tricksWon.concat([
+      //       trickWon,
+      //     ] as [CardType[]]);
+      //   }
+      // );
 
       console.log("Last player");
       console.log({
         updatedGameState,
         resetedGameState,
         winnerRoomPlayer,
-        updatedWinnerRoomPlayer,
+        trickWon,
+        // updatedWinnerRoomPlayer,
       });
 
-      await winnerRoomPlayerRef.update(updatedWinnerRoomPlayer);
+      // await winnerRoomPlayerRef.update(updatedWinnerRoomPlayer);
       await roomRef.update({ gameState: resetedGameState });
 
       return;
@@ -312,7 +313,6 @@ export const dealCard = functions.https.onCall(
         gameState.turn = (gameState.turn + 1) % 4;
         gameState.players[playerPosition].numCardsOnHand--;
       });
-      await roomRef.update({ gameState: updatedGameState });
 
       const updatedRoomPlayer = produce(
         roomPlayer as RoomPlayer,
@@ -323,10 +323,12 @@ export const dealCard = functions.https.onCall(
           );
         }
       );
+
+      await roomRef.update({ gameState: updatedGameState });
       await roomPlayerRef.update(updatedRoomPlayer);
 
       console.log("First Player");
-      console.log(console.log({ updatedGameState, updatedRoomPlayer }));
+      console.log({ updatedGameState, updatedRoomPlayer });
       return;
     }
 
@@ -354,7 +356,7 @@ export const dealCard = functions.https.onCall(
     await roomPlayerRef.update(updatedRoomPlayer);
 
     console.log("2nd or 3rd");
-    console.log(console.log({ updatedGameState, updatedRoomPlayer }));
+    console.log({ updatedGameState, updatedRoomPlayer });
   }
 );
 
@@ -459,12 +461,14 @@ const processTrick = async (gameState: GameState, roomID: string) => {
   let resetedGameState: GameState;
   if (trickWonTeam === "declarerTeam") {
     resetedGameState = produce(gameState, (gameState) => {
+      gameState.firstTableCard = null;
       gameState.declarerTeam.teamTricksWon++;
       gameState.tableCards = [null, null, null, null];
       gameState.turn = winner.position;
     });
   } else {
     resetedGameState = produce(gameState, (gameState) => {
+      gameState.firstTableCard = null;
       gameState.defendingTeam.teamTricksWon++;
       gameState.tableCards = [null, null, null, null];
       gameState.turn = winner.position;

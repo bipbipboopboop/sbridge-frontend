@@ -199,7 +199,7 @@ export const createRoom = functions.https.onCall(async (_, context) => {
     cardsOnHand: null,
 
     numTricksWon: 0,
-    tricksWon: null,
+    tricksWon: [],
   });
 
   await playerRef.update({ roomID: newRoomRef.id });
@@ -269,7 +269,7 @@ export const joinRoom = functions.https.onCall(
       cardsOnHand: null,
 
       numTricksWon: 0,
-      tricksWon: null,
+      tricksWon: [],
     });
 
     // Update the player

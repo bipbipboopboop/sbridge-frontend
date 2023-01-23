@@ -18,7 +18,7 @@ const TeammatePanel = () => {
   } = useSelectTeammate();
 
   return (
-    <BootstrapCard className="p-3" style={{ width: "70vh", height: "50vh" }}>
+    <BootstrapCard className="p-3" style={{ width: "70vh", height: "55vh" }}>
       {isBidWinner &&
         (selectedCard ? (
           <div>

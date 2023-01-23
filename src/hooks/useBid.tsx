@@ -7,6 +7,9 @@ import { Bid, BidType, BidValue, Suit } from "../utils/bids";
 import { functions } from "../utils/firebase";
 import usePlayer from "./usePlayer";
 
+/**
+ * Hook for handling bidding.
+ */
 const useBid = () => {
   const { playerData, room, me } = usePlayer();
 
@@ -18,18 +21,6 @@ const useBid = () => {
 
   // Check whether this player can bid.
   const isMyTurn = playerToBid?.playerUID === playerData?.uid;
-  const players = room?.biddingPhase?.players;
-
-  const myPosition = me?.position as number;
-  const leftPlayer = players?.find(
-    (plyr) => plyr.position === (myPosition + 1) % 4
-  );
-  const topPlayer = players?.find(
-    (plyr) => plyr.position === (myPosition + 2) % 4
-  );
-  const rightPlayer = players?.find(
-    (plyr) => plyr.position === (myPosition + 3) % 4
-  );
 
   const highestBid = room?.biddingPhase?.currHighestBid; // TODO : Add table
 
@@ -71,9 +62,7 @@ const useBid = () => {
   return {
     me,
     room,
-    leftPlayer,
-    topPlayer,
-    rightPlayer,
+
     currTurn,
     playerToBid,
     isMyTurn,

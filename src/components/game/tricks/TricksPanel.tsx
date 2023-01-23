@@ -1,5 +1,6 @@
+import { useContext } from "react";
 import { Button, Card as BootstrapCard } from "react-bootstrap";
-import useTrick from "../../../hooks/useTrick";
+import { TrickContext } from "../../../contexts/TrickContext";
 
 import { Card as CardClass } from "../../../utils/cards";
 import PlayingCard from "../../PlayingCard";
@@ -23,10 +24,10 @@ const TricksPanel = () => {
 
     isMyTurn,
     handleDeal,
-  } = useTrick();
+  } = useContext(TrickContext);
 
   return (
-    <BootstrapCard className="p-3" style={{ width: "30em", height: "25em" }}>
+    <BootstrapCard className="p-3" style={{ width: "70vh", height: "55vh" }}>
       {!isMyTurn && (
         <p className="text-center p-0 m-0">{`Player ${playerToDeal?.playerName}'s turn to play!`}</p>
       )}

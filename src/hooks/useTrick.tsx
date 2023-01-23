@@ -25,7 +25,7 @@ const useTrick = () => {
   const isMyTurn = currTurn === myPosition;
 
   // Cards on the table right now.
-  const tableCards = (room?.gameState?.tableCards as CardType[]) || [];
+  const tableCards = (room?.gameState?.tableCards as (CardType | null)[]) || [];
 
   const leftPlayerTableCard = tableCards[leftPosition];
   const topPlayerTableCard = tableCards[topPosition];
@@ -40,9 +40,7 @@ const useTrick = () => {
   const bottomOffset = (myPosition + 4 - startingPos) % 4;
 
   // Mark the player's selected card before they deal it.
-  const [selectedCard, setSelectedCard] = useState<CardType | null>(
-    new Card("♠", 7)
-  );
+  const [selectedCard, setSelectedCard] = useState<CardType | null>(null);
 
   const handleSelectCard =
     (card: Card) => (e: React.MouseEvent<HTMLElement>) => {

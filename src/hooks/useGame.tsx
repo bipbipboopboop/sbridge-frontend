@@ -1,53 +1,31 @@
 import usePlayer from "./usePlayer";
 
-// TODO : Refactor this by removing some code from useBid
+/**
+ * Hook for displaying state of game(including bidding).
+ */
 const useGame = () => {
-  const { playerData, room, me } = usePlayer();
+  const { room, me } = usePlayer();
 
-  const players = room?.biddingPhase?.players;
-  const otherPlayers = players?.filter(
-    (plyr) => plyr.position !== me?.position
+  const players = room?.gameState?.players || room?.biddingPhase?.players;
+
+  const myPosition = me?.position as number;
+  const leftPlayer = players?.find(
+    (plyr) => plyr.position === (myPosition + 1) % 4
   );
-
-  console.log({ otherPlayers });
-  const leftPlayer =
-    me &&
-    otherPlayers?.find(
-      (plyr) => plyr.position === ((me.position as number) + 1) % 4
-    );
-
-  const topPlayer =
-    me &&
-    otherPlayers?.find(
-      (plyr) => plyr.position === ((me.position as number) + 2) % 4
-    );
-
-  const rightPlayer =
-    me &&
-    otherPlayers?.find(
-      (plyr) => plyr.position === ((me.position as number) + 3) % 4
-    );
-
-  const currTurn = room?.biddingPhase?.turn;
-  const playerToBid = room?.biddingPhase?.players.find(
-    (plyr) => plyr.position === currTurn
+  const topPlayer = players?.find(
+    (plyr) => plyr.position === (myPosition + 2) % 4
   );
-  const isMyTurn = playerToBid?.playerUID === playerData?.uid;
-  const highestBid = room?.biddingPhase?.currHighestBid;
+  const rightPlayer = players?.find(
+    (plyr) => plyr.position === (myPosition + 3) % 4
+  );
 
   return {
     room,
+    me,
 
     topPlayer,
     leftPlayer,
     rightPlayer,
-    me,
-
-    currTurn,
-    isMyTurn,
-
-    playerToBid,
-    highestBid,
   };
 };
 

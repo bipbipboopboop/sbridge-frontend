@@ -35,5 +35,5 @@ export type RoomPlayer = {
   cardsOnHand: CardType[] | null;
 
   numTricksWon: number;
-  tricksWon: CardType[][] | null;
+  tricksWon: CardType[][];
 };

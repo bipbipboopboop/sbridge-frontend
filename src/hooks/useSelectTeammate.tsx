@@ -11,6 +11,10 @@ import { Card, Deck } from "../utils/cards";
 import { firestore, functions } from "../utils/firebase";
 import usePlayer from "./usePlayer";
 
+/**
+ * Hook for handling select teammate in the bidding phase
+ * @returns
+ */
 const useSelectTeammate = () => {
   const { playerData } = usePlayer();
   const [selectedSuit, setSelectedSuit] = useState<Suit | "">("");

@@ -29,10 +29,10 @@ const Card = (props: CardProps & { rotateBy: number }) => {
     <BootstrapCard
       className="p-2"
       style={{
-        width: "6em",
-        height: "8em",
-        minWidth: "6em",
-        minHeight: "8em",
+        width: "12vh",
+        height: "17vh",
+        // minWidth: "12vh",
+        // minHeight: "17vh",
         color: isRedSuit ? "#ff525d" : "black",
         borderColor: isRedSuit ? "#ff525d" : "black",
         borderWidth: "0.2em",
@@ -41,8 +41,12 @@ const Card = (props: CardProps & { rotateBy: number }) => {
         // marginLeft: "-2.5em",
       }}
     >
-      <p style={{ font: "1.5em solid" }}>{card.suit}</p>
-      <p className="d-flex justify-content-center">{card.rank}</p>
+      <p className="mb-0 p-0" style={{ font: "4.5vh solid" }}>
+        {card.suit}
+      </p>
+      <div className="h-100 d-flex flex-column justify-content-center">
+        <p className="d-flex justify-content-center m-0">{card.rank}</p>
+      </div>
     </BootstrapCard>
     // </Rotate>
   );
