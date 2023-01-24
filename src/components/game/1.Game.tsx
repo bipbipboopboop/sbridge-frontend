@@ -43,13 +43,13 @@ export default Game;
 const Background = styled.div`
   height: 93vh;
   padding: 0.5em;
-  background: rgb(129, 251, 184);
-  background: linear-gradient(
-    90deg,
-    rgba(129, 251, 184, 1) 59%,
-    rgba(40, 199, 111, 1) 100%
-  );
-
+  // background: rgb(129, 251, 184);
+  // background: linear-gradient(
+  //   90deg,
+  //   rgba(129, 251, 184, 1) 59%,
+  //   rgba(40, 199, 111, 1) 100%
+  // );
+  background-image: url(https://www.casino.org/blog/wp-content/uploads/Big_Slick-poker-1024x768.png);
   display: flex;
   flex-direction: column-reverse;
   justify-content: space-between;

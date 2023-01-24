@@ -5,6 +5,7 @@ import { useCollectionData } from "react-firebase-hooks/firestore";
 import ChatMessage from "./2.ChatMessage";
 import ChatInput from "./3.ChatInput";
 import styled from "styled-components";
+
 type ChatRoomProps = {
   roomID: string;
 };

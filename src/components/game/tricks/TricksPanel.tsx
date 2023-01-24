@@ -3,6 +3,7 @@ import { Button, Card as BootstrapCard } from "react-bootstrap";
 import { TrickContext } from "../../../contexts/TrickContext";
 
 import { Card as CardClass } from "../../../utils/cards";
+import PlaceholderCard from "../../PlaceholderCard";
 import PlayingCard from "../../PlayingCard";
 
 const TricksPanel = () => {
@@ -35,51 +36,66 @@ const TricksPanel = () => {
         <p className="text-center p-0 m-0">{`Your turn to play!`}</p>
       )}
       {isMyTurn && (
-        <p className="text-center p-0 m-0">{`Selecting ${selectedCard?.rank} of ${selectedCard?.suit}`}</p>
+        <p
+          className="text-center p-0 m-0"
+          style={{ color: selectedCard ? "black" : "white", height: "1em" }}
+        >
+          {selectedCard
+            ? `Selecting ${selectedCard?.rank} of ${selectedCard?.suit}`
+            : ""}
+        </p>
       )}
 
       <BootstrapCard.Body>
         <div
           className="d-flex justify-content-center"
-          style={{ height: "5em" }}
+          style={{ height: "5em", marginBottom: "-3vh" }}
         >
-          {topCard && (
+          {topCard ? (
             <div style={{ zIndex: topOffset }}>
               <PlayingCard card={new CardClass(topCard?.suit, topCard?.rank)} />
             </div>
+          ) : (
+            <PlaceholderCard />
           )}
         </div>
         <div
           className="d-flex justify-content-around"
           style={{ height: "5em" }}
         >
-          {leftCard && (
+          {leftCard ? (
             <div style={{ zIndex: leftOffset }}>
               <PlayingCard
                 card={new CardClass(leftCard?.suit, leftCard?.rank)}
                 orientation={"left"}
               />
             </div>
+          ) : (
+            <PlaceholderCard orientation={"left"} />
           )}
-          {rightCard && (
+          {rightCard ? (
             <div style={{ zIndex: rightOffset }}>
               <PlayingCard
                 card={new CardClass(rightCard?.suit, rightCard?.rank)}
                 orientation={"right"}
               />
             </div>
+          ) : (
+            <PlaceholderCard orientation={"right"} />
           )}
         </div>
         <div
           className="d-flex justify-content-center"
-          style={{ height: "5em" }}
+          style={{ height: "5em", marginTop: "-3vh" }}
         >
-          {bottomCard && (
+          {bottomCard ? (
             <div style={{ zIndex: bottomOffset }}>
               <PlayingCard
                 card={new CardClass(bottomCard.suit, bottomCard.rank)}
               />
             </div>
+          ) : (
+            <PlaceholderCard />
           )}
         </div>
       </BootstrapCard.Body>

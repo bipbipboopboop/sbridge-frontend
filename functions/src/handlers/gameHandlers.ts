@@ -278,18 +278,19 @@ export const dealCard = functions.https.onCall(
       const {
         resetedGameState,
         winnerRoomPlayer,
-        // winnerRoomPlayerRef,
+        winnerRoomPlayerRef,
         trickWon,
       } = await processTrick(updatedGameState, roomRef.id);
 
-      // const updatedWinnerRoomPlayer = produce(
-      //   winnerRoomPlayer as RoomPlayer,
-      //   (winnerRoomPlayer) => {
-      //     winnerRoomPlayer.tricksWon = winnerRoomPlayer.tricksWon.concat([
-      //       trickWon,
-      //     ] as [CardType[]]);
-      //   }
-      // );
+      const updatedWinnerRoomPlayer = produce(
+        winnerRoomPlayer as RoomPlayer,
+        (winnerRoomPlayer) => {
+          // winnerRoomPlayer.tricksWon = winnerRoomPlayer.tricksWon.concat([
+          //   trickWon,
+          // ] as [CardType[]]);
+          winnerRoomPlayer.numTricksWon++;
+        }
+      );
 
       console.log("Last player");
       console.log({
@@ -297,10 +298,10 @@ export const dealCard = functions.https.onCall(
         resetedGameState,
         winnerRoomPlayer,
         trickWon,
-        // updatedWinnerRoomPlayer,
+        updatedWinnerRoomPlayer,
       });
 
-      // await winnerRoomPlayerRef.update(updatedWinnerRoomPlayer);
+      await winnerRoomPlayerRef.update(updatedWinnerRoomPlayer);
       await roomRef.update({ gameState: resetedGameState });
 
       return;

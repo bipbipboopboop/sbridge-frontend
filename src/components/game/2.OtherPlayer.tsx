@@ -11,7 +11,8 @@ const OtherPlayer = (props: OtherPlayerProps) => {
   return (
     <div className="d-flex p-2">
       <div>
-        <p className="mt-2">{otherPlayer?.playerName}</p>
+        <p className="mt-2">{`${otherPlayer?.playerName}`}</p>
+        <p>{`(${otherPlayer?.numTricksWon})`}</p>
       </div>
       <Card
         style={{

@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 
 import useRoom from "../../hooks/useRoom";
 import useRoomActions from "../../hooks/useRoomActions";
+import Background from "../Background";
 
 import RoomButtons from "./2.RoomButtons";
 import RoomPlayersList from "./3.RoomPlayersList";
@@ -25,7 +26,7 @@ const WaitingArea = () => {
   const { handleLeave } = useRoomActions();
 
   return (
-    <>
+    <Background backgroundUrl="https://img5.goodfon.com/wallpaper/nbig/a/3d/fon-oboi-pikseli-kvadrat-zelionyi.jpg">
       {room && (
         <div className="h-100 p-3">
           <div>
@@ -50,7 +51,7 @@ const WaitingArea = () => {
           )}
         </div>
       )}
-    </>
+    </Background>
   );
 };
 
