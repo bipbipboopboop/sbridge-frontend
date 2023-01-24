@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { TrickContext } from "../../contexts/TrickContext";
 import usePlayer from "../../hooks/usePlayer";
 
-import { RoomPlayer } from "../../types/PlayerType";
 import { Card } from "../../utils/cards";
 import PlayingCard from "../PlayingCard";
 
