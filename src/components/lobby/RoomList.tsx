@@ -1,8 +1,7 @@
 import { User } from "firebase/auth";
 import React from "react";
 import { Room } from "../../types/RoomType";
-import JoinRoomButton from "../buttons/JoinRoomButton";
-import LeaveRoomButton from "../buttons/LeaveRoomButton";
+import Button from "../buttons/Button";
 
 type RoomListProps = {
   user: User;
@@ -28,16 +27,21 @@ const RoomList = (props: RoomListProps) => {
           <p>{`ROOM ${index}: ${rm.roomID} [${rm.currNumPlayers}] `}</p>
           <p>{`Owner : ${rm.roomOwnerName}`}</p>
           {rm.playersUID.includes(props.user?.uid as string) ? (
-            <LeaveRoomButton
-              handleLeave={handleLeave}
-              isLeavingRoom={isLeavingRoom}
-              isPlayerInAnyRoom={props.isPlayerInAnyRoom}
-            />
+            <Button
+              type={"danger"}
+              onClick={handleLeave}
+              disabled={isLeavingRoom || !props.isPlayerInAnyRoom}
+            >
+              Leave
+            </Button>
           ) : (
-            <JoinRoomButton
-              handleJoin={handleJoin(rm.roomID)}
-              isJoiningRoom={isJoiningRoom}
-            />
+            <Button
+              type={"primary"}
+              onClick={handleJoin(rm.roomID)}
+              disabled={isJoiningRoom}
+            >
+              Join
+            </Button>
           )}
         </div>
       ))}

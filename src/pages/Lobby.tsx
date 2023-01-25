@@ -13,9 +13,10 @@ import { auth } from "../utils/firebase";
 /**
  * Components
  */
-import CreateRoomButton from "../components/buttons/CreateRoomButton";
 import RoomList from "../components/lobby/RoomList";
 import useRoomActions from "../hooks/useRoomActions";
+import Button from "../components/buttons/Button";
+import Tutorial from "../components/lobby/Tutorial";
 
 const Lobby = () => {
   const [user] = useAuthState(auth); // TODO: Use either useAuthState or usePlayer
@@ -39,11 +40,13 @@ const Lobby = () => {
         <>
           <div className="h-100 w-50 pt-3 px-3">
             <h1>Rooms</h1>
-            <CreateRoomButton
-              handleCreate={handleCreate}
-              isCreatingRoom={isCreatingRoom}
-              isPlayerInAnyRoom={isPlayerInAnyRoom}
-            />
+            <Button
+              type={"primary"}
+              disabled={isPlayerInAnyRoom || isCreatingRoom}
+              onClick={handleCreate}
+            >
+              Create
+            </Button>
             <RoomList
               user={user}
               isPlayerInAnyRoom={isPlayerInAnyRoom}
@@ -55,7 +58,7 @@ const Lobby = () => {
             />
           </div>
           <div className="h-100 w-50 pt-3 px-3">
-            <h1>Top Players</h1>
+            <Tutorial />
           </div>
         </>
       )}

@@ -1,8 +1,8 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import "./assets/fonts/font.ttf";
 import "bootstrap/dist/css/bootstrap.css";
+import "nes.css/css/nes.min.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 

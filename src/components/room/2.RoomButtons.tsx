@@ -1,6 +1,5 @@
 import React from "react";
-import { Button } from "react-bootstrap";
-import ReadyButton from "../buttons/ReadyButton";
+import Button from "../buttons/Button";
 
 type RoomButtonsProps = {
   isPlayerReady: boolean;
@@ -16,21 +15,26 @@ type RoomButtonsProps = {
 };
 
 const RoomButtons = (props: RoomButtonsProps) => {
-  console.log({ isGameStartable: props.isGameStartable });
+  // TODO: Check why so many rerenders?
+  // console.log({ isGameStartable: props.isGameStartable });
   return (
     <>
       <div className="mt-3">
-        <ReadyButton
-          handleToggleReady={props.handleToggleReady}
-          isPlayerReady={props.isPlayerReady}
-        />
-        <Button className="mx-3" onClick={props.handleLeave}>
+        <Button
+          type={!props.isPlayerReady ? "primary" : "secondary"}
+          onClick={props.handleToggleReady}
+        >
+          {!props.isPlayerReady ? "Ready" : "Cancel"}
+        </Button>
+
+        <Button type={"danger"} onClick={props.handleLeave}>
           Leave
         </Button>
       </div>
       <div className="mt-3">
         {props.isPlayerAnOwner && (
           <Button
+            type={"primary"}
             disabled={!props.isGameStartable}
             onClick={props.handleStartGame}
           >
