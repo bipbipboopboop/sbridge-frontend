@@ -24,6 +24,7 @@ const Button = (props: ButtonProps & HTMLProps<HTMLButtonElement>) => {
             props.disabled ? "nes-btn is-disabled" : "nes-btn is-warning"
           }
           onClick={props.onClick}
+          disabled={props.disabled}
         >
           {props.children}
         </button>

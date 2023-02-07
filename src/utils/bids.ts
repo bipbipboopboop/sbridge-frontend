@@ -1,14 +1,15 @@
-const suitValue = {
+const bidSuitValue = {
   "♣": 1,
   "♦": 2,
   "♥": 3,
   "♠": 4,
+  NT: 5,
 } as const;
-export type Suit = keyof typeof suitValue;
+export type BidSuit = keyof typeof bidSuitValue;
 
 export type BidValue = 1 | 2 | 3 | 4 | 5 | 6;
 export class Bid {
-  suit: Suit | "NT" | null;
+  suit: BidSuit | null;
   value: BidValue | null;
   constructor(bid: BidType | null | undefined) {
     if (!bid) {
@@ -33,7 +34,9 @@ export class Bid {
       return false;
     }
     if (this.value === other.value) {
-      return suitValue[this.suit as Suit] - suitValue[other.suit as Suit];
+      return (
+        bidSuitValue[this.suit as BidSuit] - bidSuitValue[other.suit as BidSuit]
+      );
     } else {
       return (this.value as BidValue) - (other.value as BidValue);
     }
@@ -73,7 +76,7 @@ export class Bid {
 }
 
 export type BidType = {
-  suit: Suit | "NT" | null;
+  suit: BidSuit | "NT" | null;
   value: BidValue | null;
 };
 
@@ -87,4 +90,4 @@ export type PastBid = {
 };
 
 export const BidValueArray: BidValue[] = [1, 2, 3, 4, 5, 6];
-export const SuitArray: (Suit | "NT")[] = ["♣", "♦", "♥", "♠", "NT"];
+export const SuitArray: (BidSuit | "NT")[] = ["♣", "♦", "♥", "♠", "NT"];

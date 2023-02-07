@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { useHttpsCallable } from "react-firebase-hooks/functions";
 
-import { Bid, BidType, BidValue, Suit } from "../utils/bids";
+import { Bid, BidType, BidValue, BidSuit } from "../utils/bids";
 
 import { functions } from "../utils/firebase";
 import usePlayer from "./usePlayer";
@@ -27,9 +27,9 @@ const useBid = () => {
   const [selectedBidValue, setSelectedBidValue] = useState<BidValue | null>(
     null
   );
-  const [selectedSuitValue, setSelectedSuitValue] = useState<
-    Suit | "NT" | null
-  >(null);
+  const [selectedSuitValue, setSelectedSuitValue] = useState<BidSuit | null>(
+    null
+  );
 
   const handleSelectBid =
     (bidValue: BidValue) => (e: React.MouseEvent<HTMLElement>) => {
@@ -39,7 +39,7 @@ const useBid = () => {
     };
 
   const handleSelectSuit =
-    (suit: Suit | "NT") => (e: React.MouseEvent<HTMLElement>) => {
+    (suit: BidSuit) => (e: React.MouseEvent<HTMLElement>) => {
       e.preventDefault();
       setSelectedSuitValue(suit);
     };

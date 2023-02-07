@@ -39,14 +39,16 @@ const Lobby = () => {
       {user && (
         <>
           <div className="h-100 w-50 pt-3 px-3">
-            <h1>Rooms</h1>
-            <Button
-              type={"primary"}
-              disabled={isPlayerInAnyRoom || isCreatingRoom}
-              onClick={handleCreate}
-            >
-              Create
-            </Button>
+            {/* <h1>Rooms</h1> */}
+            <div className="d-flex flex-row-reverse mb-2">
+              <Button
+                type={"primary"}
+                disabled={isPlayerInAnyRoom || isCreatingRoom}
+                onClick={handleCreate}
+              >
+                Create
+              </Button>
+            </div>
             <RoomList
               user={user}
               isPlayerInAnyRoom={isPlayerInAnyRoom}

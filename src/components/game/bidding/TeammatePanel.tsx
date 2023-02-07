@@ -1,4 +1,5 @@
 import { Button, Card as BootstrapCard } from "react-bootstrap";
+import { BeatLoader } from "react-spinners";
 import useSelectTeammate from "../../../hooks/useSelectTeammate";
 import { SuitArray } from "../../../utils/bids";
 
@@ -30,8 +31,13 @@ const TeammatePanel = () => {
         ) : (
           "Pick your teammate!"
         ))}
-      {!isBidWinner && `${bidWinner?.playerName} is selecting teammate...`}
       <BootstrapCard.Body>
+        {!isBidWinner && (
+          <div className="d-flex flex-column justify-content-center align-items-center h-100">
+            <h4>{bidWinner?.playerName} is selecting teammate</h4>
+            <BeatLoader />
+          </div>
+        )}
         {isBidWinner &&
           SuitArray.map(
             (suit, suitValue) =>

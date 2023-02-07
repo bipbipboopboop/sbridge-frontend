@@ -1,5 +1,5 @@
-import { Button } from "react-bootstrap";
 import { RoomPlayer } from "../../types/PlayerType";
+import Button from "../buttons/Button";
 
 type RoomPlayerListProps = {
   roomPlayers: RoomPlayer[];
@@ -17,7 +17,7 @@ const RoomPlayersList = (props: RoomPlayerListProps) => {
             {`Player ${rmPlayer.playerName} ${isRoomOwner ? "👑" : ""} - ${
               rmPlayer.isReady ? "Ready" : "Not Ready"
             }`}
-            {props.isPlayerAnOwner && <Button>Kick</Button>}
+            {props.isPlayerAnOwner && <Button type={"danger"}>Kick</Button>}
           </div>
         );
       })}
