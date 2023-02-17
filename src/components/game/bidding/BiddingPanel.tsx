@@ -93,7 +93,7 @@ const BiddingPanel = () => {
                         const isThisClicked =
                           selectedSuitValue === thisBid.suit;
                         return (
-                          <td key={suitValue + 1}>
+                          <td key={suitValue + 1} className="p-0">
                             <Button
                               type={isThisClicked ? "primary" : "secondary"}
                               className="mx-1"

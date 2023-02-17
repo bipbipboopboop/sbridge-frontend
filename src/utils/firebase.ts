@@ -15,21 +15,21 @@ const firebaseConfig = {
 /**
  * Production
  */
-// const app = initializeApp(firebaseConfig);
-// const auth = getAuth(app);
-// const firestore = getFirestore(app);
-// const functions = getFunctions(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const firestore = getFirestore(app);
+const functions = getFunctions(app);
 
 /**
  * Testing
  */
-initializeApp(firebaseConfig);
-const auth = getAuth(getApp());
-const firestore = getFirestore(getApp());
-const functions = getFunctions(getApp());
-connectAuthEmulator(auth, "http://127.0.0.1:9099");
-connectFirestoreEmulator(firestore, "localhost", 8080);
-connectFunctionsEmulator(functions, "localhost", 5001);
-console.log({ getapp: getApp() });
+// initializeApp(firebaseConfig);
+// const auth = getAuth(getApp());
+// const firestore = getFirestore(getApp());
+// const functions = getFunctions(getApp());
+// connectAuthEmulator(auth, "http://127.0.0.1:9099");
+// connectFirestoreEmulator(firestore, "localhost", 8080);
+// connectFunctionsEmulator(functions, "localhost", 5001);
+// console.log({ getapp: getApp() });
 
 export { auth, firestore, functions };
