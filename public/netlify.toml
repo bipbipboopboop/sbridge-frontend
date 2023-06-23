@@ -1,0 +1,5 @@
+[[redirects]]
+    from = "/*"
+    to = "https://f-bridge.netlify.app/"
+    status = 301
+    force = true
